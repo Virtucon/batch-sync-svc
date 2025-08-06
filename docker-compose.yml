@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  batch-sync-svc-db:
+    image: postgres:latest
+    container_name: batch-sync-svc-db
+    environment:
+      POSTGRES_DB: batch-sync-svc-db
+      POSTGRES_USER: username
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./src/main/resources/db/changelog/transcription-example.json:/docker-entrypoint-initdb.d/transcription-example.json:ro
+    networks:
+      - transcription-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U transcription_user -d transcription_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  transcription-network:
+    driver: bridge

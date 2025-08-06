@@ -1,0 +1,116 @@
+{
+  "call_id": "550e8400-e29b-41d4-a716-446655440000",
+  "audio_quality_metric": {
+    "audio_duration_min": 4.3,
+    "audio_sample_rate": 8000,
+    "spectral_centroids_left": 1061.35,
+    "spectral_centroids_right": 1059.87,
+    "spectral_rolloff_left": 0.95,
+    "spectral_rolloff_right": 0.94,
+    "spectral_bandwidth_left": 0.15,
+    "spectral_bandwidth_right": 0.14,
+    "loudness_rms_db_left": -30.5,
+    "loudness_rms_db_right": -31.0,
+    "loudness_peak_db_left": -20.0,
+    "loudness_peak_db_right": -21.0,
+    "loudness_dynamic_range_db_left": 10.5,
+    "loudness_dynamic_range_db_right": 10.0,
+    "loudness_volume_balance_left_minus_right_db": -4.93,
+    "activity_snr_db_left": 46.32,
+    "activity_snr_db_right": 45.87,
+    "activity_snr_db_average": 46.1,
+    "activity_speech_duration_min_left": 3.5,
+    "activity_speech_duration_min_right": 3.45,
+    "activity_silence_duration_min_left": 0.8,
+    "activity_silence_duration_min_right": 0.85,
+    "activity_speech_ratio_left": 0.81,
+    "activity_speech_ratio_right": 0.8,
+    "activity_speech_overlap_duration_sec": 68.55,
+    "activity_both_silence_duration_sec": 12.45,
+    "activity_num_silence_periods": 34.23,
+    "activity_avg_silence_duration_sec": 0.36,
+    "activity_max_silence_duration_sec": 1.2,
+    "conversation_num_turns_left": 12.32,
+    "conversation_num_turns_right": 11.78,
+    "conversation_num_turns_total": 24.1,
+    "conversation_avg_gap_between_turns": 2.5,
+    "conversation_turn_balance_left": 0.52,
+    "conversation_turn_balance_right": 0.48
+  },
+  "run_config_id": "123e4567-e89b-12d3-a456-426614174000",
+  "words": [
+    {
+      "word": "hello",
+      "start": 0.0,
+      "end": 12.62,
+      "confidence": 0.98,
+      "metadata": {
+        "left_energy": 0.85,
+        "right_energy": 0.8,
+        "left_zcr": 0.02,
+        "right_zcr": 0.03
+      }
+    },
+    {
+      "word": "world",
+      "start": 12.63,
+      "end": 24.45,
+      "confidence": 0.97,
+      "metadata": {
+        "left_energy": 0.82,
+        "right_energy": 0.78,
+        "left_zcr": 0.01,
+        "right_zcr": 0.02
+      }
+    },
+    {
+      "word": "this",
+      "start": 24.46,
+      "end": 36.78,
+      "confidence": 0.95,
+      "metadata": {
+        "left_energy": 0.80,
+        "right_energy": 0.75,
+        "left_zcr": 0.01,
+        "right_zcr": 0.02
+      }
+    },
+    {
+      "word": "is",
+      "start": 36.79,
+      "end": 48.90,
+      "confidence": 0.96,
+      "metadata": {
+        "left_energy": 0.83,
+        "right_energy": 0.79,
+        "left_zcr": 0.02,
+        "right_zcr": 0.03
+      }
+    },
+    {
+      "word": "a",
+      "start": 48.91,
+      "end": 60.12,
+      "confidence": 0.99,
+      "metadata": {
+        "left_energy": 0.84,
+        "right_energy": 0.81,
+        "left_zcr": 0.02,
+        "right_zcr": 0.03
+      }
+    },
+    {
+      "word": "test",
+      "start": 60.13,
+      "end": 72.34,
+      "confidence": 0.94,
+      "metadata": {
+        "left_energy": 0.81,
+        "right_energy": 0.77,
+        "left_zcr": 0.01,
+        "right_zcr": 0.02
+      }
+    }
+  ],
+  "generated_at": "2025-07-17T10:15:30Z"
+}
