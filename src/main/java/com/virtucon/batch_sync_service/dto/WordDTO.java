@@ -1,14 +1,15 @@
 package com.virtucon.batch_sync_service.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import com.virtucon.batch_sync_service.validation.ValidTimeRange;
+import com.virtucon.batch_sync_service.validation.ValidConfidenceScore;
 
 import java.math.BigDecimal;
 
+@ValidTimeRange
 public record WordDTO(
         @NotBlank(message = "Word cannot be blank")
         String word,
@@ -22,8 +23,7 @@ public record WordDTO(
         BigDecimal end,
 
         @NotNull
-        @DecimalMin(value = "0.0", message = "Confidence must be between 0 and 1")
-        @DecimalMax(value = "1.0", message = "Confidence must be between 0 and 1")
+        @ValidConfidenceScore
         BigDecimal confidence,
 
         @Valid

@@ -2,10 +2,10 @@ package com.virtucon.batch_sync_service.service.impl;
 
 import com.virtucon.batch_sync_service.dto.TranscriptionDTO;
 import com.virtucon.batch_sync_service.entity.Transcription;
+import com.virtucon.batch_sync_service.exception.EntityAlreadyExistsException;
 import com.virtucon.batch_sync_service.mapper.TranscriptionMapper;
 import com.virtucon.batch_sync_service.repository.TranscriptionRepository;
 import com.virtucon.batch_sync_service.service.TranscriptionService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,7 +19,6 @@ public class TranscriptionServiceImpl implements TranscriptionService {
     private final TranscriptionRepository transcriptionRepository;
     private final TranscriptionMapper transcriptionMapper;
 
-    @Autowired
     public TranscriptionServiceImpl(TranscriptionRepository transcriptionRepository, 
                                    TranscriptionMapper transcriptionMapper) {
         this.transcriptionRepository = transcriptionRepository;
@@ -27,9 +26,14 @@ public class TranscriptionServiceImpl implements TranscriptionService {
     }
 
     @Override
+    public Transcription createEntity(TranscriptionDTO transcriptionDTO) {
+        return createTranscription(transcriptionDTO);
+    }
+
+    @Override
     public Transcription createTranscription(TranscriptionDTO transcriptionDTO) {
         if (existsByCallId(transcriptionDTO.callId())) {
-            throw new IllegalArgumentException("Transcription with call ID " + transcriptionDTO.callId() + " already exists");
+            throw new EntityAlreadyExistsException("Transcription", transcriptionDTO.callId());
         }
         
         Transcription transcription = transcriptionMapper.toEntity(transcriptionDTO);

@@ -1,6 +1,5 @@
 package com.virtucon.batch_sync_service.mapper;
 
-import com.virtucon.batch_sync_service.dto.AudioQualityMetricDTO;
 import com.virtucon.batch_sync_service.dto.MetadataDTO;
 import com.virtucon.batch_sync_service.dto.TranscriptionDTO;
 import com.virtucon.batch_sync_service.dto.WordDTO;
@@ -16,12 +15,18 @@ import java.util.List;
 @Component
 public class TranscriptionMapper {
 
+    private final AudioQualityMetricMapper audioQualityMetricMapper;
+
+    public TranscriptionMapper(AudioQualityMetricMapper audioQualityMetricMapper) {
+        this.audioQualityMetricMapper = audioQualityMetricMapper;
+    }
+
     public Transcription toEntity(TranscriptionDTO dto) {
         if (dto == null) {
             return null;
         }
 
-        AudioQualityMetric audioQualityMetric = toAudioQualityMetricEntity(dto.audioQualityMetric());
+        AudioQualityMetric audioQualityMetric = audioQualityMetricMapper.toEntity(dto.audioQualityMetric());
         List<Word> words = toWordEntities(dto.words());
 
         return new Transcription(
@@ -33,49 +38,6 @@ public class TranscriptionMapper {
         );
     }
 
-    private AudioQualityMetric toAudioQualityMetricEntity(AudioQualityMetricDTO dto) {
-        if (dto == null) {
-            return null;
-        }
-
-        return new AudioQualityMetric(
-                dto.audioDurationMin(),
-                dto.audioSampleRate(),
-                dto.spectralCentroidsLeft(),
-                dto.spectralCentroidsRight(),
-                dto.spectralRolloffLeft(),
-                dto.spectralRolloffRight(),
-                dto.spectralBandwidthLeft(),
-                dto.spectralBandwidthRight(),
-                dto.loudnessRmsDbLeft(),
-                dto.loudnessRmsDbRight(),
-                dto.loudnessPeakDbLeft(),
-                dto.loudnessPeakDbRight(),
-                dto.loudnessDynamicRangeDbLeft(),
-                dto.loudnessDynamicRangeDbRight(),
-                dto.loudnessVolumeBalanceLeftMinusRightDb(),
-                dto.activitySnrDbLeft(),
-                dto.activitySnrDbRight(),
-                dto.activitySnrDbAverage(),
-                dto.activitySpeechDurationMinLeft(),
-                dto.activitySpeechDurationMinRight(),
-                dto.activitySilenceDurationMinLeft(),
-                dto.activitySilenceDurationMinRight(),
-                dto.activitySpeechRatioLeft(),
-                dto.activitySpeechRatioRight(),
-                dto.activitySpeechOverlapDurationSec(),
-                dto.activityBothSilenceDurationSec(),
-                dto.activityNumSilencePeriods(),
-                dto.activityAvgSilenceDurationSec(),
-                dto.activityMaxSilenceDurationSec(),
-                dto.conversationNumTurnsLeft(),
-                dto.conversationNumTurnsRight(),
-                dto.conversationNumTurnsTotal(),
-                dto.conversationAvgGapBetweenTurns(),
-                dto.conversationTurnBalanceLeft(),
-                dto.conversationTurnBalanceRight()
-        );
-    }
 
     private List<Word> toWordEntities(List<WordDTO> dtos) {
         if (dtos == null) {

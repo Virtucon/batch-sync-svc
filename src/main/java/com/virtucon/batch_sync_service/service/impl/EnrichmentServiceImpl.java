@@ -2,10 +2,10 @@ package com.virtucon.batch_sync_service.service.impl;
 
 import com.virtucon.batch_sync_service.dto.EnrichmentDTO;
 import com.virtucon.batch_sync_service.entity.Enrichment;
+import com.virtucon.batch_sync_service.exception.EntityAlreadyExistsException;
 import com.virtucon.batch_sync_service.mapper.EnrichmentMapper;
 import com.virtucon.batch_sync_service.repository.EnrichmentRepository;
 import com.virtucon.batch_sync_service.service.EnrichmentService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,7 +19,6 @@ public class EnrichmentServiceImpl implements EnrichmentService {
     private final EnrichmentRepository enrichmentRepository;
     private final EnrichmentMapper enrichmentMapper;
 
-    @Autowired
     public EnrichmentServiceImpl(EnrichmentRepository enrichmentRepository, 
                                 EnrichmentMapper enrichmentMapper) {
         this.enrichmentRepository = enrichmentRepository;
@@ -27,9 +26,14 @@ public class EnrichmentServiceImpl implements EnrichmentService {
     }
 
     @Override
+    public Enrichment createEntity(EnrichmentDTO enrichmentDTO) {
+        return createEnrichment(enrichmentDTO);
+    }
+
+    @Override
     public Enrichment createEnrichment(EnrichmentDTO enrichmentDTO) {
         if (existsByCallId(enrichmentDTO.callId())) {
-            throw new IllegalArgumentException("Enrichment with call ID " + enrichmentDTO.callId() + " already exists");
+            throw new EntityAlreadyExistsException("Enrichment", enrichmentDTO.callId());
         }
         
         Enrichment enrichment = enrichmentMapper.toEntity(enrichmentDTO);
