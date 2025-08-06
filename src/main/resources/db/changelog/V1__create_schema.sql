@@ -73,6 +73,35 @@ CREATE TABLE words (
 );
 
 --changeset virtucon:5
+CREATE TABLE enrichments (
+    id BIGSERIAL PRIMARY KEY,
+    call_id UUID NOT NULL UNIQUE,
+    audio_quality_metric_id BIGINT NOT NULL,
+    run_config_id UUID NOT NULL,
+    generated_at TIMESTAMP WITH TIME ZONE NOT NULL,
+    FOREIGN KEY (audio_quality_metric_id) REFERENCES audio_quality_metrics(id)
+);
+
+--changeset virtucon:6
+CREATE TABLE sentences (
+    id BIGSERIAL PRIMARY KEY,
+    idx INTEGER NOT NULL,
+    text TEXT NOT NULL,
+    emotion VARCHAR(50) NOT NULL,
+    emotion_score DECIMAL(5,4) NOT NULL,
+    speaker VARCHAR(50) NOT NULL,
+    start_time DECIMAL(10,3) NOT NULL,
+    end_time DECIMAL(10,3) NOT NULL,
+    asr_confidence TEXT NOT NULL,
+    diarisation_confidence TEXT NOT NULL,
+    enrichment_id BIGINT NOT NULL,
+    FOREIGN KEY (enrichment_id) REFERENCES enrichments(id)
+);
+
+--changeset virtucon:7
 CREATE INDEX idx_transcriptions_call_id ON transcriptions(call_id);
 CREATE INDEX idx_words_transcription_id ON words(transcription_id);
 CREATE INDEX idx_transcriptions_generated_at ON transcriptions(generated_at);
+CREATE INDEX idx_enrichments_call_id ON enrichments(call_id);
+CREATE INDEX idx_sentences_enrichment_id ON sentences(enrichment_id);
+CREATE INDEX idx_enrichments_generated_at ON enrichments(generated_at);

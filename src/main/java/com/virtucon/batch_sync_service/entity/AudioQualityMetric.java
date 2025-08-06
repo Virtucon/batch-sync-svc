@@ -121,6 +121,9 @@ public class AudioQualityMetric {
     @OneToOne(mappedBy = "audioQualityMetric", fetch = FetchType.LAZY)
     private Transcription transcription;
 
+    @OneToOne(mappedBy = "audioQualityMetric", fetch = FetchType.LAZY)
+    private Enrichment enrichment;
+
     protected AudioQualityMetric() {
     }
 
@@ -470,6 +473,14 @@ public class AudioQualityMetric {
 
     public void setTranscription(Transcription transcription) {
         this.transcription = transcription;
+    }
+
+    public Enrichment getEnrichment() {
+        return enrichment;
+    }
+
+    public void setEnrichment(Enrichment enrichment) {
+        this.enrichment = enrichment;
     }
 
     @Override

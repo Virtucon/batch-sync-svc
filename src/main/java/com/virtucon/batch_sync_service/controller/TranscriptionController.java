@@ -2,6 +2,7 @@ package com.virtucon.batch_sync_service.controller;
 
 import com.virtucon.batch_sync_service.dto.TranscriptionDTO;
 import com.virtucon.batch_sync_service.entity.Transcription;
+import com.virtucon.batch_sync_service.response.ApiResponse;
 import com.virtucon.batch_sync_service.service.TranscriptionService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,62 +25,51 @@ public class TranscriptionController {
     }
 
     @PostMapping
-    public ResponseEntity<Map<String, Object>> createTranscription(@Valid @RequestBody TranscriptionDTO transcriptionDTO) {
+    public ResponseEntity<ApiResponse<Map<String, Object>>> createTranscription(@Valid @RequestBody TranscriptionDTO transcriptionDTO) {
         try {
             Transcription savedTranscription = transcriptionService.createTranscription(transcriptionDTO);
             
-            Map<String, Object> response = Map.of(
-                    "message", "Transcription created successfully",
+            Map<String, Object> data = Map.of(
                     "id", savedTranscription.getId(),
                     "callId", savedTranscription.getCallId()
             );
             
+            ApiResponse<Map<String, Object>> response = ApiResponse.success("Transcription saved successfully.", data);
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
             
         } catch (IllegalArgumentException e) {
-            Map<String, Object> errorResponse = Map.of(
-                    "error", "Duplicate transcription",
-                    "message", e.getMessage()
-            );
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
+            ApiResponse<Map<String, Object>> response = ApiResponse.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
             
         } catch (Exception e) {
-            Map<String, Object> errorResponse = Map.of(
-                    "error", "Internal server error",
-                    "message", "Failed to create transcription"
-            );
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+            ApiResponse<Map<String, Object>> response = ApiResponse.error("Failed to create transcription");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
 
     @GetMapping("/call/{callId}")
-    public ResponseEntity<Map<String, Object>> getTranscriptionByCallId(@PathVariable UUID callId) {
+    public ResponseEntity<ApiResponse<Map<String, Object>>> getTranscriptionByCallId(@PathVariable UUID callId) {
         return transcriptionService.findByCallId(callId)
                 .map(transcription -> {
-                    Map<String, Object> response = Map.of(
+                    Map<String, Object> data = Map.of(
                             "id", transcription.getId(),
                             "callId", transcription.getCallId(),
                             "runConfigId", transcription.getRunConfigId(),
                             "generatedAt", transcription.getGeneratedAt(),
                             "wordCount", transcription.getWords().size()
                     );
+                    ApiResponse<Map<String, Object>> response = ApiResponse.success("Transcription found", data);
                     return ResponseEntity.ok(response);
                 })
                 .orElseGet(() -> {
-                    Map<String, Object> errorResponse = Map.of(
-                            "error", "Not found",
-                            "message", "Transcription with call ID " + callId + " not found"
-                    );
-                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+                    ApiResponse<Map<String, Object>> response = ApiResponse.error("Transcription with call ID " + callId + " not found");
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
                 });
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Map<String, Object>> handleGeneralException(Exception e) {
-        Map<String, Object> errorResponse = Map.of(
-                "error", "Unexpected error",
-                "message", e.getMessage()
-        );
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+    public ResponseEntity<ApiResponse<Object>> handleGeneralException(Exception e) {
+        ApiResponse<Object> response = ApiResponse.error("Unexpected error: " + e.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
     }
 }

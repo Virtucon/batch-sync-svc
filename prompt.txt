@@ -1,11 +1,20 @@
-You are a senior-level Java Spring Boot software engineer tasked with building a clean, scalable, and production-ready transcription ingestion system. Follow modern Spring Boot architecture and best practices.
+You are a senior Java Spring Boot engineer working on a scalable backend that ingests audio metadata. The system already supports /transcriptions and now needs an additional endpoint to support enrichments. Please extend the application accordingly.
 
-🔧 Requirements Overview
-Create a Spring Boot controller named TranscriptionController that exposes a POST /transcriptions endpoint. This endpoint ingests a complex JSON payload representing audio transcription data and persists it into a PostgreSQL database.
+🔧 New Functionality Overview
+Add a second endpoint:
 
-📦 JSON Payload Example
-Here is the structure of the expected JSON payload:
+POST /enrichments
+Defined in a new controller: EnrichmentController
 
+Accepts a new JSON payload (structure below)
+
+Ingests and stores the payload in the existing schema (via schema update, no new Liquibase migration)
+
+Uses the same audio_quality_metric structure already present in transcriptions
+
+Introduces a common base API response format used by both controllers
+
+📦 Enrichment JSON Payload
 {
   "call_id": "550e8400-e29b-41d4-a716-446655440000",
   "audio_quality_metric": {
@@ -46,171 +55,192 @@ Here is the structure of the expected JSON payload:
     "conversation_turn_balance_right": 0.48
   },
   "run_config_id": "123e4567-e89b-12d3-a456-426614174000",
-  "words": [
+  "sentences": [
     {
-      "word": "hello",
+      "idx": 0,
+      "text": "Hello.",
+      "emotion": "neutral",
+      "emotion_score": 0.98,
+      "speaker": "Customer",
       "start": 0.0,
       "end": 12.62,
-      "confidence": 0.98,
-      "metadata": {
-        "left_energy": 0.85,
-        "right_energy": 0.8,
-        "left_zcr": 0.02,
-        "right_zcr": 0.03
-      }
+      "asr_confidence": [0.97],
+      "diarisation_confidence": ["high"]
     },
     {
-      "word": "world",
+      "idx": 1,
+      "text": "Hello. Can I speak to [REDACTED] please?",
+      "emotion": "neutral",
+      "emotion_score": 0.76,
+      "speaker": "Agent",
       "start": 12.63,
       "end": 24.45,
-      "confidence": 0.97,
-      "metadata": {
-        "left_energy": 0.82,
-        "right_energy": 0.78,
-        "left_zcr": 0.01,
-        "right_zcr": 0.02
-      }
+      "asr_confidence": [0.96, 0.95, 0.94, 0.93, 0.92, 0.91, 0.9],
+      "diarisation_confidence": ["medium", "medium", "high", "high", "high", "medium", "medium"]
     },
     {
-      "word": "this",
+      "idx": 2,
+      "text": "Can I take a message? He's in the shower.",
+      "emotion": "surprise",
+      "emotion_score": 0.45,
+      "speaker": "Customer",
       "start": 24.46,
       "end": 36.78,
-      "confidence": 0.95,
-      "metadata": {
-        "left_energy": 0.80,
-        "right_energy": 0.75,
-        "left_zcr": 0.01,
-        "right_zcr": 0.02
-      }
+      "asr_confidence": [0.95, 0.94, 0.93, 0.92, 0.91, 0.9, 0.89, 0.88, 0.87],
+      "diarisation_confidence": ["high", "high", "medium", "medium", "medium", "medium", "low", "low", "low"]
     },
     {
-      "word": "is",
+      "idx": 3,
+      "text": "Speak to you Thursday.",
+      "emotion": "neutral",
+      "emotion_score": 0.85,
+      "speaker": "Agent",
       "start": 36.79,
-      "end": 48.90,
-      "confidence": 0.96,
-      "metadata": {
-        "left_energy": 0.83,
-        "right_energy": 0.79,
-        "left_zcr": 0.02,
-        "right_zcr": 0.03
-      }
-    },
-    {
-      "word": "a",
-      "start": 48.91,
-      "end": 60.12,
-      "confidence": 0.99,
-      "metadata": {
-        "left_energy": 0.84,
-        "right_energy": 0.81,
-        "left_zcr": 0.02,
-        "right_zcr": 0.03
-      }
-    },
-    {
-      "word": "test",
-      "start": 60.13,
-      "end": 72.34,
-      "confidence": 0.94,
-      "metadata": {
-        "left_energy": 0.81,
-        "right_energy": 0.77,
-        "left_zcr": 0.01,
-        "right_zcr": 0.02
-      }
+      "end": 48.12,
+      "asr_confidence": [0.96, 0.95, 0.94, 0.93],
+      "diarisation_confidence": ["high", "medium", "medium", "low"]
     }
   ],
   "generated_at": "2025-07-17T10:15:30Z"
 }
 
-🧠 Your Task
-Design a modular Spring Boot application using the following principles:
 
-1. Define the Architecture
-Controller Layer: Expose a @RestController with a @PostMapping("/transcriptions") endpoint to receive JSON.
+🧠 Implementation Requirements
+1. Extend Existing Schema
+Update the existing Liquibase schema migration (e.g., V1__create_schema.sql) to support storing enrichments.
 
-DTO Layer: Define a TranscriptionDTO with nested DTOs (AudioQualityMetricDTO, WordDTO, MetadataDTO).
+Add enrichment and sentence tables as part of the original schema definition.
 
-Builder/Mapper Layer: Use a TranscriptionBuilder class or MapStruct to convert DTOs to Transcription entity classes.
+Ensure relationships to existing audio_quality_metric (if reused) are clear.
 
-Entity Layer: Create JPA entities for Transcription, AudioQualityMetric, Word, and WordMetadata, with appropriate relationships.
+2. New Controller
+EnrichmentController exposes POST /enrichments
 
-Service Layer: Use an interface-driven TranscriptionService for business logic, implemented by TranscriptionServiceImpl.
+Accepts the JSON, maps to DTOs
 
-Repository Layer: Use Spring Data JpaRepository interfaces for persistence.
+Returns a standardized API response
 
-2. Handle Persistence
-Use PostgreSQL with a transcription table and supporting tables.
+3. DTOs
+EnrichmentDTO
 
-Use Liquibase for database migrations:
+Contains: call_id, run_config_id, audio_quality_metric, sentences, generated_at
 
-db/changelog/db.changelog-master.xml
+SentenceDTO
 
-db/changelog/V1__create_schema.sql
+idx, text, emotion, emotion_score, speaker, start, end, asr_confidence (List<Double>), diarisation_confidence (List<String>)
 
-3. Dockerize PostgreSQL
-Provide a docker-compose.yml file to spin up a PostgreSQL container.
+4. Entities
+Enrichment
 
-Configure application.properties to connect to this container.
+One-to-many with Sentence
 
-4. Follow Spring Boot Best Practices
-Use constructor-based dependency injection.
+One-to-one or shared relation with AudioQualityMetric (reused from transcription if desired)
 
-Split large classes (e.g., DTOs) into separate files.
+Sentence
 
-Validate inputs with @Valid annotations.
+Stored as a separate table
 
-Use @Transactional for service-layer persistence.
+Each sentence belongs to one enrichment
 
-Return meaningful HTTP status codes.
+5. Common API Response
+Create a generic response wrapper used in both TranscriptionController and EnrichmentController.
 
-🛠 Output Format
-Please return the full implementation plan in markdown, structured like this:
+java
+Copy
+Edit
+public class ApiResponse<T> {
+    private boolean success;
+    private String message;
+    private T data;
+}
+All endpoints return this format.
+
+On success:
+
+json
+Copy
+Edit
+{
+  "success": true,
+  "message": "Enrichment saved successfully.",
+  "data": { /* optional DTO data or ID */ }
+}
+6. Mapper / Builder
+Map EnrichmentDTO to Enrichment entity
+
+Can use MapStruct or manual EnrichmentBuilder
+
+7. Service Layer
+Interface: EnrichmentService
+
+Implementation: EnrichmentServiceImpl
+
+Business logic to save enrichment and child sentences
+
+8. Repository Layer
+EnrichmentRepository extends JpaRepository<Enrichment, UUID>
+
+SentenceRepository extends JpaRepository<Sentence, UUID>
+
+🗃️ Persistence + Config
+No new migration file: schema changes must be added directly to V1__create_schema.sql
+
+Ensure PostgreSQL config remains valid in application.properties
+
+Schema bootstraps with the app
+
+🐳 Docker
+PostgreSQL container reused from the existing docker-compose.yml
+
+No changes unless enriching tables require new ports, volumes, or configs
+
+✅ Output Instructions
+Please return the implementation plan in markdown, using the following structure:
 
 📁 Project Structure
+bash
+Copy
+Edit
 src/
  └── main/
-     ├── java/com/example/transcription/
-     │   ├── controller/TranscriptionController.java
+     ├── java/com/example/
+     │   ├── controller/
+     │   │   ├── EnrichmentController.java
+     │   │   └── TranscriptionController.java
      │   ├── dto/
-     │   │   ├── TranscriptionDTO.java
-     │   │   └── ...
+     │   │   ├── EnrichmentDTO.java
+     │   │   ├── SentenceDTO.java
+     │   │   └── AudioQualityMetricDTO.java
      │   ├── entity/
-     │   │   ├── Transcription.java
-     │   │   └── ...
+     │   │   ├── Enrichment.java
+     │   │   ├── Sentence.java
+     │   │   └── AudioQualityMetric.java
+     │   ├── mapper/
+     │   │   └── EnrichmentBuilder.java
      │   ├── service/
-     │   │   ├── TranscriptionService.java
-     │   │   └── impl/TranscriptionServiceImpl.java
+     │   │   ├── EnrichmentService.java
+     │   │   └── impl/EnrichmentServiceImpl.java
      │   ├── repository/
-     │   │   └── TranscriptionRepository.java
-     │   └── mapper/
-     │       └── TranscriptionBuilder.java
+     │   │   ├── EnrichmentRepository.java
+     │   │   └── SentenceRepository.java
+     │   └── response/
+     │       └── ApiResponse.java
      ├── resources/
-     │   ├── application.properties
      │   └── db/
      │       └── changelog/
      │           ├── db.changelog-master.xml
      │           └── V1__create_schema.sql
  └── test/
      └── ...
-docker-compose.yml
-✅ Step-by-Step Implementation
-Define DTOs
+✅ Summary
+You're extending the app to support enrichment data ingestion with:
 
-Define Entities
+A new /enrichments endpoint
 
-Create Mappers
+Matching DTOs/entities/services
 
-Build Controller
+A shared audio metric model (reused)
 
-Implement Service Layer
+A common base API response format
 
-Create Repository Interfaces
-
-Configure Liquibase
-
-Write SQL migration script
-
-Add application.properties
-
-Define Docker Compose for PostgreSQL
+Schema changes incorporated directly into the original Liquibase migration
