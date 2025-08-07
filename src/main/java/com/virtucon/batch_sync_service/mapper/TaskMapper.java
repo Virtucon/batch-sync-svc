@@ -34,6 +34,8 @@ public class TaskMapper {
         }
         
         TaskEntity entity = new TaskEntity(null, dto.taskType(), dto.taskStatus(), dto.owner());
+        entity.setProcessingStart(dto.processingStart());
+        entity.setProcessingEnd(dto.processingEnd());
         return entity;
     }
 
