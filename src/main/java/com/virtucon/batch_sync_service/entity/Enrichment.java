@@ -27,6 +27,7 @@ public class Enrichment {
     private UUID runConfigId;
 
     @OneToMany(mappedBy = "enrichment", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @org.hibernate.annotations.BatchSize(size = 15)
     private List<Sentence> sentences = new ArrayList<>();
 
     @Column(name = "generated_at", nullable = false)

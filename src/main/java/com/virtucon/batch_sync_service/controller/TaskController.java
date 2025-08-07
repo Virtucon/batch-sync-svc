@@ -6,6 +6,7 @@ import com.virtucon.batch_sync_service.dto.UpdateTaskDto;
 import com.virtucon.batch_sync_service.entity.TaskEntity;
 import com.virtucon.batch_sync_service.entity.TaskStatus;
 import com.virtucon.batch_sync_service.entity.TaskType;
+import com.virtucon.batch_sync_service.mapper.TaskMapper;
 import com.virtucon.batch_sync_service.response.ApiResponse;
 import com.virtucon.batch_sync_service.service.TaskService;
 import jakarta.validation.Valid;
@@ -25,15 +26,17 @@ import java.util.UUID;
 public class TaskController {
 
     private final TaskService taskService;
+    private final TaskMapper taskMapper;
 
-    public TaskController(TaskService taskService) {
+    public TaskController(TaskService taskService, TaskMapper taskMapper) {
         this.taskService = taskService;
+        this.taskMapper = taskMapper;
     }
 
     @PostMapping
     public ResponseEntity<ApiResponse<TaskDto>> createTask(@Valid @RequestBody CreateTaskDto createTaskDto) {
         TaskEntity savedTask = taskService.createTask(createTaskDto);
-        TaskDto data = convertToDto(savedTask);
+        TaskDto data = taskMapper.toDto(savedTask);
         
         ApiResponse<TaskDto> response = ApiResponse.success("Task created successfully.", data);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
@@ -49,7 +52,7 @@ public class TaskController {
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<TaskDto>> updateTask(@PathVariable UUID id, @Valid @RequestBody UpdateTaskDto updateTaskDto) {
         TaskEntity updatedTask = taskService.updateTask(id, updateTaskDto);
-        TaskDto data = convertToDto(updatedTask);
+        TaskDto data = taskMapper.toDto(updatedTask);
         
         ApiResponse<TaskDto> response = ApiResponse.success("Task updated successfully.", data);
         return ResponseEntity.ok(response);
@@ -74,7 +77,7 @@ public class TaskController {
         Pageable pageable = PageRequest.of(page, size, sort);
         
         Page<TaskEntity> taskPage = taskService.findAllTasks(pageable);
-        Page<TaskDto> data = taskPage.map(this::convertToDto);
+        Page<TaskDto> data = taskPage.map(taskMapper::toDto);
         
         ApiResponse<Page<TaskDto>> response = ApiResponse.success("Tasks retrieved successfully", data);
         return ResponseEntity.ok(response);
@@ -83,7 +86,7 @@ public class TaskController {
     @GetMapping("/type/{taskType}")
     public ResponseEntity<ApiResponse<List<TaskDto>>> getTasksByType(@PathVariable TaskType taskType) {
         List<TaskEntity> tasks = taskService.findByTaskType(taskType);
-        List<TaskDto> data = tasks.stream().map(this::convertToDto).toList();
+        List<TaskDto> data = tasks.stream().map(taskMapper::toDto).toList();
         
         ApiResponse<List<TaskDto>> response = ApiResponse.success("Tasks found by type", data);
         return ResponseEntity.ok(response);
@@ -92,7 +95,7 @@ public class TaskController {
     @GetMapping("/status/{taskStatus}")
     public ResponseEntity<ApiResponse<List<TaskDto>>> getTasksByStatus(@PathVariable TaskStatus taskStatus) {
         List<TaskEntity> tasks = taskService.findByTaskStatus(taskStatus);
-        List<TaskDto> data = tasks.stream().map(this::convertToDto).toList();
+        List<TaskDto> data = tasks.stream().map(taskMapper::toDto).toList();
         
         ApiResponse<List<TaskDto>> response = ApiResponse.success("Tasks found by status", data);
         return ResponseEntity.ok(response);
@@ -101,7 +104,7 @@ public class TaskController {
     @GetMapping("/owner/{owner}")
     public ResponseEntity<ApiResponse<List<TaskDto>>> getTasksByOwner(@PathVariable String owner) {
         List<TaskEntity> tasks = taskService.findByOwner(owner);
-        List<TaskDto> data = tasks.stream().map(this::convertToDto).toList();
+        List<TaskDto> data = tasks.stream().map(taskMapper::toDto).toList();
         
         ApiResponse<List<TaskDto>> response = ApiResponse.success("Tasks found by owner", data);
         return ResponseEntity.ok(response);
@@ -110,24 +113,10 @@ public class TaskController {
     @GetMapping("/file")
     public ResponseEntity<ApiResponse<List<TaskDto>>> getTasksByFileUrl(@RequestParam String url) {
         List<TaskEntity> tasks = taskService.findByFileUrl(url);
-        List<TaskDto> data = tasks.stream().map(this::convertToDto).toList();
+        List<TaskDto> data = tasks.stream().map(taskMapper::toDto).toList();
         
         ApiResponse<List<TaskDto>> response = ApiResponse.success("Tasks found by file URL", data);
         return ResponseEntity.ok(response);
     }
 
-    private TaskDto convertToDto(TaskEntity task) {
-        return new TaskDto(
-                task.getId(),
-                task.getFile().getId(),
-                task.getFile().getUrl(),
-                task.getTaskType(),
-                task.getTaskStatus(),
-                task.getProcessingStart(),
-                task.getProcessingEnd(),
-                task.getOwner(),
-                task.getCreatedAt(),
-                task.getUpdatedAt()
-        );
-    }
 }

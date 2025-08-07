@@ -26,10 +26,12 @@ public class TaskServiceImpl implements TaskService {
 
     private final TaskRepository taskRepository;
     private final FileRepository fileRepository;
+    private final java.time.Clock clock;
 
-    public TaskServiceImpl(TaskRepository taskRepository, FileRepository fileRepository) {
+    public TaskServiceImpl(TaskRepository taskRepository, FileRepository fileRepository, java.time.Clock clock) {
         this.taskRepository = taskRepository;
         this.fileRepository = fileRepository;
+        this.clock = clock;
     }
 
     @Override

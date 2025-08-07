@@ -27,6 +27,7 @@ public class Transcription {
     private UUID runConfigId;
 
     @OneToMany(mappedBy = "transcription", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @org.hibernate.annotations.BatchSize(size = 20)
     private List<Word> words = new ArrayList<>();
 
     @Column(name = "generated_at", nullable = false)
@@ -69,6 +70,9 @@ public class Transcription {
     }
 
     public void setAudioQualityMetric(AudioQualityMetric audioQualityMetric) {
+        if (this.audioQualityMetric != null) {
+            this.audioQualityMetric.setTranscription(null);
+        }
         this.audioQualityMetric = audioQualityMetric;
         if (audioQualityMetric != null) {
             audioQualityMetric.setTranscription(this);
@@ -88,6 +92,11 @@ public class Transcription {
     }
 
     public void setWords(List<Word> words) {
+        if (this.words != null) {
+            for (Word word : this.words) {
+                word.setTranscription(null);
+            }
+        }
         this.words = words != null ? words : new ArrayList<>();
         for (Word word : this.words) {
             word.setTranscription(this);

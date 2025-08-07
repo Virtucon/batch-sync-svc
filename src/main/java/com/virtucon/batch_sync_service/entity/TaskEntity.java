@@ -53,8 +53,6 @@ public class TaskEntity {
         this.taskType = taskType;
         this.taskStatus = taskStatus;
         this.owner = owner;
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
     }
 
     @PreUpdate

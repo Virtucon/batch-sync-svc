@@ -22,8 +22,37 @@ public interface TaskRepository extends JpaRepository<TaskEntity, UUID> {
     
     List<TaskEntity> findByOwner(String owner);
     
-    @Query("SELECT t FROM TaskEntity t WHERE t.file.url = :url")
+    @Query("SELECT t FROM TaskEntity t JOIN FETCH t.file WHERE t.file.url = :url")
     List<TaskEntity> findByFileUrl(@Param("url") String url);
     
-    Page<TaskEntity> findByTaskTypeAndTaskStatus(TaskType taskType, TaskStatus taskStatus, Pageable pageable);
+    @Query("SELECT t FROM TaskEntity t JOIN FETCH t.file WHERE t.taskType = :taskType AND t.taskStatus = :status")
+    Page<TaskEntity> findByTaskTypeAndTaskStatus(
+        @Param("taskType") TaskType taskType, 
+        @Param("status") TaskStatus taskStatus, 
+        Pageable pageable
+    );
+    
+    @Query("SELECT t FROM TaskEntity t JOIN FETCH t.file WHERE t.taskStatus = :status ORDER BY t.createdAt DESC")
+    List<TaskEntity> findByTaskStatusWithFile(@Param("status") TaskStatus status);
+    
+    @Query("SELECT t FROM TaskEntity t JOIN FETCH t.file WHERE t.owner = :owner ORDER BY t.updatedAt DESC")
+    List<TaskEntity> findByOwnerWithFile(@Param("owner") String owner);
+    
+    interface TaskSummaryProjection {
+        java.util.UUID getId();
+        TaskStatus getTaskStatus();
+        TaskType getTaskType();
+        String getOwner();
+        java.time.LocalDateTime getCreatedAt();
+        java.time.LocalDateTime getUpdatedAt();
+        FileProjection getFile();
+        
+        interface FileProjection {
+            java.util.UUID getId();
+            String getUrl();
+        }
+    }
+    
+    @Query("SELECT t FROM TaskEntity t")
+    Page<TaskSummaryProjection> findAllSummary(Pageable pageable);
 }

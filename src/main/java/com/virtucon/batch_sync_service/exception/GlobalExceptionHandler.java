@@ -1,6 +1,7 @@
 package com.virtucon.batch_sync_service.exception;
 
 import com.virtucon.batch_sync_service.response.ApiResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,29 +23,58 @@ public class GlobalExceptionHandler {
     private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
     
     @ExceptionHandler(EntityAlreadyExistsException.class)
-    public ResponseEntity<ApiResponse<Object>> handleEntityAlreadyExists(EntityAlreadyExistsException e) {
+    public ResponseEntity<ApiResponse<Object>> handleEntityAlreadyExists(
+            EntityAlreadyExistsException e, HttpServletRequest request) {
         logger.warn("Entity already exists: {}", e.getMessage());
-        ApiResponse<Object> response = ApiResponse.error(e.getMessage());
+        
+        ErrorDetails error = new ErrorDetails(
+            Instant.now(),
+            request.getRequestURI(),
+            "ENTITY_ALREADY_EXISTS",
+            e.getMessage()
+        );
+        
+        ApiResponse<Object> response = ApiResponse.error("Entity already exists", error);
         return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
     }
     
     @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<ApiResponse<Object>> handleEntityNotFound(EntityNotFoundException e) {
+    public ResponseEntity<ApiResponse<Object>> handleEntityNotFound(
+            EntityNotFoundException e, HttpServletRequest request) {
         logger.warn("Entity not found: {}", e.getMessage());
-        ApiResponse<Object> response = ApiResponse.error(e.getMessage());
+        
+        ErrorDetails error = new ErrorDetails(
+            Instant.now(),
+            request.getRequestURI(),
+            "ENTITY_NOT_FOUND",
+            e.getMessage()
+        );
+        
+        ApiResponse<Object> response = ApiResponse.error("Entity not found", error);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
     
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ApiResponse<Object>> handleValidationErrors(MethodArgumentNotValidException e) {
+    public ResponseEntity<ApiResponse<Object>> handleValidationErrors(
+            MethodArgumentNotValidException e, HttpServletRequest request) {
         logger.warn("Validation error: {}", e.getMessage());
-        Map<String, String> errors = new HashMap<>();
+        
+        Map<String, String> fieldErrors = new HashMap<>();
         e.getBindingResult().getAllErrors().forEach((error) -> {
             String fieldName = ((FieldError) error).getField();
             String errorMessage = error.getDefaultMessage();
-            errors.put(fieldName, errorMessage);
+            fieldErrors.put(fieldName, errorMessage);
         });
-        ApiResponse<Object> response = ApiResponse.error("Validation failed", errors);
+        
+        ErrorDetails error = new ErrorDetails(
+            Instant.now(),
+            request.getRequestURI(),
+            "VALIDATION_FAILED",
+            "Request validation failed",
+            fieldErrors
+        );
+        
+        ApiResponse<Object> response = ApiResponse.error("Validation failed", error);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
     

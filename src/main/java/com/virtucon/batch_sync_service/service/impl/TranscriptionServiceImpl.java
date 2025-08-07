@@ -42,6 +42,7 @@ public class TranscriptionServiceImpl implements TranscriptionService {
 
     @Override
     @Transactional(readOnly = true)
+    @org.springframework.cache.annotation.Cacheable(value = "transcriptions", key = "#callId")
     public Optional<Transcription> findByCallId(UUID callId) {
         return transcriptionRepository.findByCallId(callId);
     }
