@@ -7,18 +7,79 @@ import com.virtucon.batch_sync_service.dto.WordDTO;
 import com.virtucon.batch_sync_service.entity.Transcription;
 import com.virtucon.batch_sync_service.entity.Word;
 import com.virtucon.batch_sync_service.entity.WordMetadata;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
+import org.springframework.stereotype.Component;
 
-@Mapper(componentModel = "spring", uses = {AudioQualityMetricMapper.class})
-public interface TranscriptionMapperNew {
+import java.util.ArrayList;
+import java.util.List;
 
-    Transcription toEntity(TranscriptionDTO dto);
+@Component
+public class TranscriptionMapperNew {
+
+    private final AudioQualityMetricMapper audioQualityMetricMapper;
+
+    public TranscriptionMapperNew(AudioQualityMetricMapper audioQualityMetricMapper) {
+        this.audioQualityMetricMapper = audioQualityMetricMapper;
+    }
+
+    public Transcription toEntity(TranscriptionDTO dto) {
+        if (dto == null) {
+            return null;
+        }
+        
+        List<Word> words = new ArrayList<>();
+        if (dto.words() != null) {
+            for (WordDTO wordDto : dto.words()) {
+                words.add(toEntity(wordDto));
+            }
+        }
+        
+        return new Transcription(
+            dto.callId(),
+            audioQualityMetricMapper.toEntity(dto.audioQualityMetric()),
+            dto.runConfigId(),
+            words,
+            dto.generatedAt()
+        );
+    }
     
-    Word toEntity(WordDTO dto);
+    public Word toEntity(WordDTO dto) {
+        if (dto == null) {
+            return null;
+        }
+        
+        return new Word(
+            dto.word(),
+            dto.start(),
+            dto.end(),
+            dto.confidence(),
+            toEntity(dto.metadata())
+        );
+    }
     
-    WordMetadata toEntity(MetadataDTO dto);
+    public WordMetadata toEntity(MetadataDTO dto) {
+        if (dto == null) {
+            return null;
+        }
+        
+        return new WordMetadata(
+            dto.leftEnergy(),
+            dto.rightEnergy(),
+            dto.leftZcr(),
+            dto.rightZcr()
+        );
+    }
     
-    @Mapping(target = "wordCount", expression = "java(entity.getWords().size())")
-    TranscriptionResponseDTO toResponseDto(Transcription entity);
+    public TranscriptionResponseDTO toResponseDto(Transcription entity) {
+        if (entity == null) {
+            return null;
+        }
+        
+        return new TranscriptionResponseDTO(
+            entity.getId(),
+            entity.getCallId(),
+            entity.getRunConfigId(),
+            entity.getGeneratedAt(),
+            entity.getWords() != null ? entity.getWords().size() : 0
+        );
+    }
 }
