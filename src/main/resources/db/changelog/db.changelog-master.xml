@@ -5,5 +5,6 @@
                    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
     <include file="db/changelog/V1__create_schema.sql"/>
+    <include file="db/changelog/V2__create_files_and_tasks.sql"/>
 
 </databaseChangeLog>
