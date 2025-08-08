@@ -1,10 +1,10 @@
 package com.virtucon.batch_sync_service.mapper;
 
+import org.springframework.stereotype.Component;
+
 import com.virtucon.batch_sync_service.dto.CreateTaskDto;
 import com.virtucon.batch_sync_service.dto.TaskDto;
-import com.virtucon.batch_sync_service.dto.UpdateTaskDto;
 import com.virtucon.batch_sync_service.entity.TaskEntity;
-import org.springframework.stereotype.Component;
 
 @Component
 public class TaskMapper {
@@ -37,27 +37,5 @@ public class TaskMapper {
         entity.setProcessingStart(dto.processingStart());
         entity.setProcessingEnd(dto.processingEnd());
         return entity;
-    }
-
-    public void updateEntityFromDto(UpdateTaskDto dto, TaskEntity entity) {
-        if (dto == null || entity == null) {
-            return;
-        }
-        
-        if (dto.taskType() != null) {
-            entity.setTaskType(dto.taskType());
-        }
-        if (dto.taskStatus() != null) {
-            entity.setTaskStatus(dto.taskStatus());
-        }
-        if (dto.processingStart() != null) {
-            entity.setProcessingStart(dto.processingStart());
-        }
-        if (dto.processingEnd() != null) {
-            entity.setProcessingEnd(dto.processingEnd());
-        }
-        if (dto.owner() != null) {
-            entity.setOwner(dto.owner());
-        }
     }
 }

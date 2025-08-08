@@ -1,25 +1,26 @@
 package com.virtucon.batch_sync_service.mapper;
 
+import java.time.LocalDateTime;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import com.virtucon.batch_sync_service.dto.CreateTaskDto;
 import com.virtucon.batch_sync_service.dto.TaskDto;
 import com.virtucon.batch_sync_service.entity.FileEntity;
 import com.virtucon.batch_sync_service.entity.TaskEntity;
 import com.virtucon.batch_sync_service.entity.TaskStatus;
 import com.virtucon.batch_sync_service.entity.TaskType;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
-import java.time.LocalDateTime;
-import java.util.UUID;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
-@SpringBootTest
 class TaskMapperTest {
 
-    @Autowired
     private TaskMapper taskMapper;
+
+    @BeforeEach
+    void setUp() {
+        taskMapper = new TaskMapper();
+    }
 
     @Test
     void shouldMapTaskEntityToDto() {

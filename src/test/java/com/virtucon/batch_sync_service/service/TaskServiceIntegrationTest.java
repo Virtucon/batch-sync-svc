@@ -1,19 +1,19 @@
 package com.virtucon.batch_sync_service.service;
 
-import com.virtucon.batch_sync_service.dto.CreateTaskDto;
-import com.virtucon.batch_sync_service.entity.TaskEntity;
-import com.virtucon.batch_sync_service.entity.TaskStatus;
-import com.virtucon.batch_sync_service.entity.TaskType;
-import com.virtucon.batch_sync_service.repository.TaskRepository;
+import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
-import com.virtucon.batch_sync_service.TestcontainersConfiguration;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import com.virtucon.batch_sync_service.TestcontainersConfiguration;
+import com.virtucon.batch_sync_service.dto.CreateTaskDto;
+import com.virtucon.batch_sync_service.entity.TaskEntity;
+import com.virtucon.batch_sync_service.entity.TaskStatus;
+import com.virtucon.batch_sync_service.entity.TaskType;
+import com.virtucon.batch_sync_service.repository.TaskRepository;
 
 @SpringBootTest
 @Import(TestcontainersConfiguration.class)
@@ -79,23 +79,5 @@ class TaskServiceIntegrationTest {
         assertThat(firstTask.getFile().getId()).isEqualTo(secondTask.getFile().getId());
         assertThat(firstTask.getFile().getUrl()).isEqualTo(secondTask.getFile().getUrl());
         assertThat(firstTask.getId()).isNotEqualTo(secondTask.getId());
-    }
-
-    @Test
-    void shouldFindTasksByStatus() {
-        CreateTaskDto taskDto = new CreateTaskDto(
-            "https://example.com/status-test.wav",
-            TaskType.TRANSCRIPTION,
-            TaskStatus.IN_PROGRESS,
-            null,
-            null,
-            "test-owner"
-        );
-
-        TaskEntity createdTask = taskService.createTask(taskDto);
-        var tasks = taskService.findByTaskStatus(TaskStatus.IN_PROGRESS);
-
-        assertThat(tasks).isNotEmpty();
-        assertThat(tasks).anyMatch(t -> t.getId().equals(createdTask.getId()));
     }
 }

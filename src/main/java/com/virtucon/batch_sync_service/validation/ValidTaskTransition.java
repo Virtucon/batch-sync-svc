@@ -10,7 +10,7 @@ import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
 @Documented
-@Constraint(validatedBy = {TaskTransitionValidator.class, PatchTaskTransitionValidator.class})
+@Constraint(validatedBy = {PatchTaskTransitionValidator.class})
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidTaskTransition {

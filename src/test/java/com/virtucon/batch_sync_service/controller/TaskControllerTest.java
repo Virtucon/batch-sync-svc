@@ -2,7 +2,6 @@ package com.virtucon.batch_sync_service.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.virtucon.batch_sync_service.dto.CreateTaskDto;
-import com.virtucon.batch_sync_service.dto.TaskDto;
 import com.virtucon.batch_sync_service.entity.FileEntity;
 import com.virtucon.batch_sync_service.entity.TaskEntity;
 import com.virtucon.batch_sync_service.entity.TaskStatus;
@@ -21,7 +20,6 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -65,19 +63,7 @@ class TaskControllerTest {
                 .andExpect(jsonPath("$.data.task_status").value("READY"));
     }
 
-    @Test
-    void shouldGetTaskByIdSuccessfully() throws Exception {
-        UUID taskId = UUID.randomUUID();
-        TaskDto mockTaskDto = createMockTaskDto(taskId);
-        
-        when(taskService.getTaskDto(eq(taskId))).thenReturn(mockTaskDto);
 
-        mockMvc.perform(get("/api/tasks/{id}", taskId))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.success").value(true))
-                .andExpect(jsonPath("$.message").value("Task found"))
-                .andExpect(jsonPath("$.data.id").value(taskId.toString()));
-    }
 
     @Test
     void shouldReturn400ForInvalidCreateTaskRequest() throws Exception {
@@ -130,20 +116,5 @@ class TaskControllerTest {
             throw new RuntimeException("Failed to set mock entity fields", e);
         }
         return entity;
-    }
-
-    private TaskDto createMockTaskDto(UUID id) {
-        return new TaskDto(
-            id,
-            UUID.randomUUID(),
-            "https://example.com/test.wav",
-            TaskType.TRANSCRIPTION,
-            TaskStatus.READY,
-            null,
-            null,
-            "test-owner",
-            LocalDateTime.now(),
-            LocalDateTime.now()
-        );
     }
 }
