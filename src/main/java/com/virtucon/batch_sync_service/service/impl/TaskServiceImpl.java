@@ -1,5 +1,14 @@
 package com.virtucon.batch_sync_service.service.impl;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.virtucon.batch_sync_service.dto.CreateTaskDto;
 import com.virtucon.batch_sync_service.dto.TaskDto;
 import com.virtucon.batch_sync_service.dto.UpdateTaskDto;
@@ -11,14 +20,6 @@ import com.virtucon.batch_sync_service.exception.EntityNotFoundException;
 import com.virtucon.batch_sync_service.repository.FileRepository;
 import com.virtucon.batch_sync_service.repository.TaskRepository;
 import com.virtucon.batch_sync_service.service.TaskService;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 
 @Service
 @Transactional
@@ -141,5 +142,11 @@ public class TaskServiceImpl implements TaskService {
     @Transactional(readOnly = true)
     public List<TaskEntity> findByFileUrl(String url) {
         return taskRepository.findByFileUrl(url);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<TaskEntity> findNotAssignedReadyTasks(Pageable pageable) {
+        return taskRepository.findByTaskTypeAndTaskStatus(TaskType.NOT_ASSIGNED, TaskStatus.READY, pageable);
     }
 }

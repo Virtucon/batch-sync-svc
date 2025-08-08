@@ -1,17 +1,18 @@
 package com.virtucon.batch_sync_service.service;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import com.virtucon.batch_sync_service.dto.CreateTaskDto;
 import com.virtucon.batch_sync_service.dto.TaskDto;
 import com.virtucon.batch_sync_service.dto.UpdateTaskDto;
 import com.virtucon.batch_sync_service.entity.TaskEntity;
 import com.virtucon.batch_sync_service.entity.TaskStatus;
 import com.virtucon.batch_sync_service.entity.TaskType;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 
 public interface TaskService {
     
@@ -36,4 +37,6 @@ public interface TaskService {
     List<TaskEntity> findByOwner(String owner);
     
     List<TaskEntity> findByFileUrl(String url);
+    
+    Page<TaskEntity> findNotAssignedReadyTasks(Pageable pageable);
 }
