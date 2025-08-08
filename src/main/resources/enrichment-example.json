@@ -1,5 +1,6 @@
 {
   "call_id": "550e8400-e29b-41d4-a716-446655440000",
+  "task_id": "123e4567-e89b-12d3-a456-426614174000",
   "audio_quality_metric": {
     "audio_duration_min": 4.3,
     "audio_sample_rate": 8000,

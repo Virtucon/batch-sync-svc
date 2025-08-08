@@ -6,6 +6,7 @@ import java.util.UUID;
 public record TranscriptionResponseDTO(
         Long id,
         UUID callId,
+        UUID taskId,
         UUID runConfigId,
         Instant generatedAt,
         int wordCount

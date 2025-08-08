@@ -1,15 +1,16 @@
 package com.virtucon.batch_sync_service.mapper;
 
-import com.virtucon.batch_sync_service.service.JsonSerializationService;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.stereotype.Component;
+
 import com.virtucon.batch_sync_service.dto.EnrichmentDTO;
 import com.virtucon.batch_sync_service.dto.SentenceDTO;
 import com.virtucon.batch_sync_service.entity.AudioQualityMetric;
 import com.virtucon.batch_sync_service.entity.Enrichment;
 import com.virtucon.batch_sync_service.entity.Sentence;
-import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.virtucon.batch_sync_service.service.JsonSerializationService;
 
 @Component
 public class EnrichmentMapper {
@@ -33,6 +34,7 @@ public class EnrichmentMapper {
 
         return new Enrichment(
                 dto.callId(),
+                dto.taskId(),
                 audioQualityMetric,
                 dto.runConfigId(),
                 sentences,

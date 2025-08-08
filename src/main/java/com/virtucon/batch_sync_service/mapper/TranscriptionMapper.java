@@ -1,5 +1,10 @@
 package com.virtucon.batch_sync_service.mapper;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.stereotype.Component;
+
 import com.virtucon.batch_sync_service.dto.MetadataDTO;
 import com.virtucon.batch_sync_service.dto.TranscriptionDTO;
 import com.virtucon.batch_sync_service.dto.WordDTO;
@@ -7,10 +12,6 @@ import com.virtucon.batch_sync_service.entity.AudioQualityMetric;
 import com.virtucon.batch_sync_service.entity.Transcription;
 import com.virtucon.batch_sync_service.entity.Word;
 import com.virtucon.batch_sync_service.entity.WordMetadata;
-import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Component
 public class TranscriptionMapper {
@@ -31,6 +32,7 @@ public class TranscriptionMapper {
 
         return new Transcription(
                 dto.callId(),
+                dto.taskId(),
                 audioQualityMetric,
                 dto.runConfigId(),
                 words,

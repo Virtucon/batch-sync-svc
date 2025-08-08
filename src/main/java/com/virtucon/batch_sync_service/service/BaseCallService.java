@@ -9,5 +9,9 @@ public interface BaseCallService<T, DTO> {
     
     Optional<T> findByCallId(UUID callId);
     
+    Optional<T> findByTaskId(UUID taskId);
+    
     boolean existsByCallId(UUID callId);
+    
+    boolean existsByTaskId(UUID taskId);
 }

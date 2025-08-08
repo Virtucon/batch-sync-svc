@@ -1,16 +1,17 @@
 package com.virtucon.batch_sync_service.service.impl;
 
+import java.util.Optional;
+import java.util.UUID;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.virtucon.batch_sync_service.dto.TranscriptionDTO;
 import com.virtucon.batch_sync_service.entity.Transcription;
 import com.virtucon.batch_sync_service.exception.EntityAlreadyExistsException;
 import com.virtucon.batch_sync_service.mapper.TranscriptionMapper;
 import com.virtucon.batch_sync_service.repository.TranscriptionRepository;
 import com.virtucon.batch_sync_service.service.TranscriptionService;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
-import java.util.UUID;
 
 @Service
 @Transactional
@@ -49,7 +50,20 @@ public class TranscriptionServiceImpl implements TranscriptionService {
 
     @Override
     @Transactional(readOnly = true)
+    @org.springframework.cache.annotation.Cacheable(value = "transcriptions", key = "#taskId")
+    public Optional<Transcription> findByTaskId(UUID taskId) {
+        return transcriptionRepository.findByTaskId(taskId);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public boolean existsByCallId(UUID callId) {
         return transcriptionRepository.existsByCallId(callId);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean existsByTaskId(UUID taskId) {
+        return transcriptionRepository.existsByTaskId(taskId);
     }
 }

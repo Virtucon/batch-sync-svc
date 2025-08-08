@@ -1,16 +1,17 @@
 package com.virtucon.batch_sync_service.service.impl;
 
+import java.util.Optional;
+import java.util.UUID;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.virtucon.batch_sync_service.dto.EnrichmentDTO;
 import com.virtucon.batch_sync_service.entity.Enrichment;
 import com.virtucon.batch_sync_service.exception.EntityAlreadyExistsException;
 import com.virtucon.batch_sync_service.mapper.EnrichmentMapper;
 import com.virtucon.batch_sync_service.repository.EnrichmentRepository;
 import com.virtucon.batch_sync_service.service.EnrichmentService;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
-import java.util.UUID;
 
 @Service
 @Transactional
@@ -48,7 +49,19 @@ public class EnrichmentServiceImpl implements EnrichmentService {
 
     @Override
     @Transactional(readOnly = true)
+    public Optional<Enrichment> findByTaskId(UUID taskId) {
+        return enrichmentRepository.findByTaskId(taskId);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public boolean existsByCallId(UUID callId) {
         return enrichmentRepository.existsByCallId(callId);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean existsByTaskId(UUID taskId) {
+        return enrichmentRepository.existsByTaskId(taskId);
     }
 }

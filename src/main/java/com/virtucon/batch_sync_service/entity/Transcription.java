@@ -1,12 +1,22 @@
 package com.virtucon.batch_sync_service.entity;
 
-import jakarta.persistence.*;
-
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "transcriptions")
@@ -18,6 +28,9 @@ public class Transcription {
 
     @Column(name = "call_id", nullable = false)
     private UUID callId;
+
+    @Column(name = "task_id", nullable = false)
+    private UUID taskId;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "audio_quality_metric_id")
@@ -36,9 +49,10 @@ public class Transcription {
     protected Transcription() {
     }
 
-    public Transcription(UUID callId, AudioQualityMetric audioQualityMetric, 
+    public Transcription(UUID callId, UUID taskId, AudioQualityMetric audioQualityMetric, 
                         UUID runConfigId, List<Word> words, Instant generatedAt) {
         this.callId = callId;
+        this.taskId = taskId;
         this.audioQualityMetric = audioQualityMetric;
         this.runConfigId = runConfigId;
         this.words = words != null ? words : new ArrayList<>();
@@ -63,6 +77,14 @@ public class Transcription {
 
     public void setCallId(UUID callId) {
         this.callId = callId;
+    }
+
+    public UUID getTaskId() {
+        return taskId;
+    }
+
+    public void setTaskId(UUID taskId) {
+        this.taskId = taskId;
     }
 
     public AudioQualityMetric getAudioQualityMetric() {

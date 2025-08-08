@@ -44,6 +44,7 @@ CREATE TABLE audio_quality_metrics (
 CREATE TABLE transcriptions (
     id BIGSERIAL PRIMARY KEY,
     call_id UUID NOT NULL UNIQUE,
+    task_id UUID NOT NULL,
     audio_quality_metric_id BIGINT NOT NULL,
     run_config_id UUID NOT NULL,
     generated_at TIMESTAMP WITH TIME ZONE NOT NULL,
@@ -76,6 +77,7 @@ CREATE TABLE words (
 CREATE TABLE enrichments (
     id BIGSERIAL PRIMARY KEY,
     call_id UUID NOT NULL UNIQUE,
+    task_id UUID NOT NULL,
     audio_quality_metric_id BIGINT NOT NULL,
     run_config_id UUID NOT NULL,
     generated_at TIMESTAMP WITH TIME ZONE NOT NULL,
@@ -100,9 +102,11 @@ CREATE TABLE sentences (
 
 --changeset virtucon:7
 CREATE INDEX idx_transcriptions_call_id ON transcriptions(call_id);
+CREATE INDEX idx_transcriptions_task_id ON transcriptions(task_id);
 CREATE INDEX idx_words_transcription_id ON words(transcription_id);
 CREATE INDEX idx_transcriptions_generated_at ON transcriptions(generated_at);
 CREATE INDEX idx_enrichments_call_id ON enrichments(call_id);
+CREATE INDEX idx_enrichments_task_id ON enrichments(task_id);
 CREATE INDEX idx_sentences_enrichment_id ON sentences(enrichment_id);
 CREATE INDEX idx_enrichments_generated_at ON enrichments(generated_at);
 
