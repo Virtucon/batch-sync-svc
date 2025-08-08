@@ -1,0 +1,1373 @@
+// ========== AudioQualityMetric.java ==========
+package com.virtucon.batch_sync_service.entity;
+
+import jakarta.persistence.*;
+
+import java.math.BigDecimal;
+import java.util.Objects;
+
+@Entity
+@Table(name = "audio_quality_metrics")
+public class AudioQualityMetric {
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "audio_duration_min", nullable = false, precision = 10, scale = 3)
+    private BigDecimal audioDurationMin;
+
+    @Column(name = "audio_sample_rate", nullable = false)
+    private Integer audioSampleRate;
+
+    @Column(name = "spectral_centroids_left", nullable = false, precision = 10, scale = 3)
+    private BigDecimal spectralCentroidsLeft;
+
+    @Column(name = "spectral_centroids_right", nullable = false, precision = 10, scale = 3)
+    private BigDecimal spectralCentroidsRight;
+
+    @Column(name = "spectral_rolloff_left", nullable = false, precision = 10, scale = 6)
+    private BigDecimal spectralRolloffLeft;
+
+    @Column(name = "spectral_rolloff_right", nullable = false, precision = 10, scale = 6)
+    private BigDecimal spectralRolloffRight;
+
+    @Column(name = "spectral_bandwidth_left", nullable = false, precision = 10, scale = 6)
+    private BigDecimal spectralBandwidthLeft;
+
+    @Column(name = "spectral_bandwidth_right", nullable = false, precision = 10, scale = 6)
+    private BigDecimal spectralBandwidthRight;
+
+    @Column(name = "loudness_rms_db_left", nullable = false, precision = 8, scale = 3)
+    private BigDecimal loudnessRmsDbLeft;
+
+    @Column(name = "loudness_rms_db_right", nullable = false, precision = 8, scale = 3)
+    private BigDecimal loudnessRmsDbRight;
+
+    @Column(name = "loudness_peak_db_left", nullable = false, precision = 8, scale = 3)
+    private BigDecimal loudnessPeakDbLeft;
+
+    @Column(name = "loudness_peak_db_right", nullable = false, precision = 8, scale = 3)
+    private BigDecimal loudnessPeakDbRight;
+
+    @Column(name = "loudness_dynamic_range_db_left", nullable = false, precision = 8, scale = 3)
+    private BigDecimal loudnessDynamicRangeDbLeft;
+
+    @Column(name = "loudness_dynamic_range_db_right", nullable = false, precision = 8, scale = 3)
+    private BigDecimal loudnessDynamicRangeDbRight;
+
+    @Column(name = "loudness_volume_balance_left_minus_right_db", nullable = false, precision = 8, scale = 3)
+    private BigDecimal loudnessVolumeBalanceLeftMinusRightDb;
+
+    @Column(name = "activity_snr_db_left", nullable = false, precision = 8, scale = 3)
+    private BigDecimal activitySnrDbLeft;
+
+    @Column(name = "activity_snr_db_right", nullable = false, precision = 8, scale = 3)
+    private BigDecimal activitySnrDbRight;
+
+    @Column(name = "activity_snr_db_average", nullable = false, precision = 8, scale = 3)
+    private BigDecimal activitySnrDbAverage;
+
+    @Column(name = "activity_speech_duration_min_left", nullable = false, precision = 10, scale = 3)
+    private BigDecimal activitySpeechDurationMinLeft;
+
+    @Column(name = "activity_speech_duration_min_right", nullable = false, precision = 10, scale = 3)
+    private BigDecimal activitySpeechDurationMinRight;
+
+    @Column(name = "activity_silence_duration_min_left", nullable = false, precision = 10, scale = 3)
+    private BigDecimal activitySilenceDurationMinLeft;
+
+    @Column(name = "activity_silence_duration_min_right", nullable = false, precision = 10, scale = 3)
+    private BigDecimal activitySilenceDurationMinRight;
+
+    @Column(name = "activity_speech_ratio_left", nullable = false, precision = 8, scale = 6)
+    private BigDecimal activitySpeechRatioLeft;
+
+    @Column(name = "activity_speech_ratio_right", nullable = false, precision = 8, scale = 6)
+    private BigDecimal activitySpeechRatioRight;
+
+    @Column(name = "activity_speech_overlap_duration_sec", nullable = false, precision = 10, scale = 3)
+    private BigDecimal activitySpeechOverlapDurationSec;
+
+    @Column(name = "activity_both_silence_duration_sec", nullable = false, precision = 10, scale = 3)
+    private BigDecimal activityBothSilenceDurationSec;
+
+    @Column(name = "activity_num_silence_periods", nullable = false, precision = 10, scale = 3)
+    private BigDecimal activityNumSilencePeriods;
+
+    @Column(name = "activity_avg_silence_duration_sec", nullable = false, precision = 8, scale = 3)
+    private BigDecimal activityAvgSilenceDurationSec;
+
+    @Column(name = "activity_max_silence_duration_sec", nullable = false, precision = 8, scale = 3)
+    private BigDecimal activityMaxSilenceDurationSec;
+
+    @Column(name = "conversation_num_turns_left", nullable = false, precision = 10, scale = 3)
+    private BigDecimal conversationNumTurnsLeft;
+
+    @Column(name = "conversation_num_turns_right", nullable = false, precision = 10, scale = 3)
+    private BigDecimal conversationNumTurnsRight;
+
+    @Column(name = "conversation_num_turns_total", nullable = false, precision = 10, scale = 3)
+    private BigDecimal conversationNumTurnsTotal;
+
+    @Column(name = "conversation_avg_gap_between_turns", nullable = false, precision = 8, scale = 3)
+    private BigDecimal conversationAvgGapBetweenTurns;
+
+    @Column(name = "conversation_turn_balance_left", nullable = false, precision = 8, scale = 6)
+    private BigDecimal conversationTurnBalanceLeft;
+
+    @Column(name = "conversation_turn_balance_right", nullable = false, precision = 8, scale = 6)
+    private BigDecimal conversationTurnBalanceRight;
+
+    @OneToOne(mappedBy = "audioQualityMetric", fetch = FetchType.LAZY)
+    private Transcription transcription;
+
+    @OneToOne(mappedBy = "audioQualityMetric", fetch = FetchType.LAZY)
+    private Enrichment enrichment;
+
+    protected AudioQualityMetric() {
+    }
+
+    public AudioQualityMetric(BigDecimal audioDurationMin, Integer audioSampleRate, 
+                             BigDecimal spectralCentroidsLeft, BigDecimal spectralCentroidsRight,
+                             BigDecimal spectralRolloffLeft, BigDecimal spectralRolloffRight,
+                             BigDecimal spectralBandwidthLeft, BigDecimal spectralBandwidthRight,
+                             BigDecimal loudnessRmsDbLeft, BigDecimal loudnessRmsDbRight,
+                             BigDecimal loudnessPeakDbLeft, BigDecimal loudnessPeakDbRight,
+                             BigDecimal loudnessDynamicRangeDbLeft, BigDecimal loudnessDynamicRangeDbRight,
+                             BigDecimal loudnessVolumeBalanceLeftMinusRightDb,
+                             BigDecimal activitySnrDbLeft, BigDecimal activitySnrDbRight,
+                             BigDecimal activitySnrDbAverage,
+                             BigDecimal activitySpeechDurationMinLeft, BigDecimal activitySpeechDurationMinRight,
+                             BigDecimal activitySilenceDurationMinLeft, BigDecimal activitySilenceDurationMinRight,
+                             BigDecimal activitySpeechRatioLeft, BigDecimal activitySpeechRatioRight,
+                             BigDecimal activitySpeechOverlapDurationSec, BigDecimal activityBothSilenceDurationSec,
+                             BigDecimal activityNumSilencePeriods, BigDecimal activityAvgSilenceDurationSec,
+                             BigDecimal activityMaxSilenceDurationSec,
+                             BigDecimal conversationNumTurnsLeft, BigDecimal conversationNumTurnsRight,
+                             BigDecimal conversationNumTurnsTotal, BigDecimal conversationAvgGapBetweenTurns,
+                             BigDecimal conversationTurnBalanceLeft, BigDecimal conversationTurnBalanceRight) {
+        this.audioDurationMin = audioDurationMin;
+        this.audioSampleRate = audioSampleRate;
+        this.spectralCentroidsLeft = spectralCentroidsLeft;
+        this.spectralCentroidsRight = spectralCentroidsRight;
+        this.spectralRolloffLeft = spectralRolloffLeft;
+        this.spectralRolloffRight = spectralRolloffRight;
+        this.spectralBandwidthLeft = spectralBandwidthLeft;
+        this.spectralBandwidthRight = spectralBandwidthRight;
+        this.loudnessRmsDbLeft = loudnessRmsDbLeft;
+        this.loudnessRmsDbRight = loudnessRmsDbRight;
+        this.loudnessPeakDbLeft = loudnessPeakDbLeft;
+        this.loudnessPeakDbRight = loudnessPeakDbRight;
+        this.loudnessDynamicRangeDbLeft = loudnessDynamicRangeDbLeft;
+        this.loudnessDynamicRangeDbRight = loudnessDynamicRangeDbRight;
+        this.loudnessVolumeBalanceLeftMinusRightDb = loudnessVolumeBalanceLeftMinusRightDb;
+        this.activitySnrDbLeft = activitySnrDbLeft;
+        this.activitySnrDbRight = activitySnrDbRight;
+        this.activitySnrDbAverage = activitySnrDbAverage;
+        this.activitySpeechDurationMinLeft = activitySpeechDurationMinLeft;
+        this.activitySpeechDurationMinRight = activitySpeechDurationMinRight;
+        this.activitySilenceDurationMinLeft = activitySilenceDurationMinLeft;
+        this.activitySilenceDurationMinRight = activitySilenceDurationMinRight;
+        this.activitySpeechRatioLeft = activitySpeechRatioLeft;
+        this.activitySpeechRatioRight = activitySpeechRatioRight;
+        this.activitySpeechOverlapDurationSec = activitySpeechOverlapDurationSec;
+        this.activityBothSilenceDurationSec = activityBothSilenceDurationSec;
+        this.activityNumSilencePeriods = activityNumSilencePeriods;
+        this.activityAvgSilenceDurationSec = activityAvgSilenceDurationSec;
+        this.activityMaxSilenceDurationSec = activityMaxSilenceDurationSec;
+        this.conversationNumTurnsLeft = conversationNumTurnsLeft;
+        this.conversationNumTurnsRight = conversationNumTurnsRight;
+        this.conversationNumTurnsTotal = conversationNumTurnsTotal;
+        this.conversationAvgGapBetweenTurns = conversationAvgGapBetweenTurns;
+        this.conversationTurnBalanceLeft = conversationTurnBalanceLeft;
+        this.conversationTurnBalanceRight = conversationTurnBalanceRight;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public BigDecimal getAudioDurationMin() {
+        return audioDurationMin;
+    }
+
+    public void setAudioDurationMin(BigDecimal audioDurationMin) {
+        this.audioDurationMin = audioDurationMin;
+    }
+
+    public Integer getAudioSampleRate() {
+        return audioSampleRate;
+    }
+
+    public void setAudioSampleRate(Integer audioSampleRate) {
+        this.audioSampleRate = audioSampleRate;
+    }
+
+    public BigDecimal getSpectralCentroidsLeft() {
+        return spectralCentroidsLeft;
+    }
+
+    public void setSpectralCentroidsLeft(BigDecimal spectralCentroidsLeft) {
+        this.spectralCentroidsLeft = spectralCentroidsLeft;
+    }
+
+    public BigDecimal getSpectralCentroidsRight() {
+        return spectralCentroidsRight;
+    }
+
+    public void setSpectralCentroidsRight(BigDecimal spectralCentroidsRight) {
+        this.spectralCentroidsRight = spectralCentroidsRight;
+    }
+
+    public BigDecimal getSpectralRolloffLeft() {
+        return spectralRolloffLeft;
+    }
+
+    public void setSpectralRolloffLeft(BigDecimal spectralRolloffLeft) {
+        this.spectralRolloffLeft = spectralRolloffLeft;
+    }
+
+    public BigDecimal getSpectralRolloffRight() {
+        return spectralRolloffRight;
+    }
+
+    public void setSpectralRolloffRight(BigDecimal spectralRolloffRight) {
+        this.spectralRolloffRight = spectralRolloffRight;
+    }
+
+    public BigDecimal getSpectralBandwidthLeft() {
+        return spectralBandwidthLeft;
+    }
+
+    public void setSpectralBandwidthLeft(BigDecimal spectralBandwidthLeft) {
+        this.spectralBandwidthLeft = spectralBandwidthLeft;
+    }
+
+    public BigDecimal getSpectralBandwidthRight() {
+        return spectralBandwidthRight;
+    }
+
+    public void setSpectralBandwidthRight(BigDecimal spectralBandwidthRight) {
+        this.spectralBandwidthRight = spectralBandwidthRight;
+    }
+
+    public BigDecimal getLoudnessRmsDbLeft() {
+        return loudnessRmsDbLeft;
+    }
+
+    public void setLoudnessRmsDbLeft(BigDecimal loudnessRmsDbLeft) {
+        this.loudnessRmsDbLeft = loudnessRmsDbLeft;
+    }
+
+    public BigDecimal getLoudnessRmsDbRight() {
+        return loudnessRmsDbRight;
+    }
+
+    public void setLoudnessRmsDbRight(BigDecimal loudnessRmsDbRight) {
+        this.loudnessRmsDbRight = loudnessRmsDbRight;
+    }
+
+    public BigDecimal getLoudnessPeakDbLeft() {
+        return loudnessPeakDbLeft;
+    }
+
+    public void setLoudnessPeakDbLeft(BigDecimal loudnessPeakDbLeft) {
+        this.loudnessPeakDbLeft = loudnessPeakDbLeft;
+    }
+
+    public BigDecimal getLoudnessPeakDbRight() {
+        return loudnessPeakDbRight;
+    }
+
+    public void setLoudnessPeakDbRight(BigDecimal loudnessPeakDbRight) {
+        this.loudnessPeakDbRight = loudnessPeakDbRight;
+    }
+
+    public BigDecimal getLoudnessDynamicRangeDbLeft() {
+        return loudnessDynamicRangeDbLeft;
+    }
+
+    public void setLoudnessDynamicRangeDbLeft(BigDecimal loudnessDynamicRangeDbLeft) {
+        this.loudnessDynamicRangeDbLeft = loudnessDynamicRangeDbLeft;
+    }
+
+    public BigDecimal getLoudnessDynamicRangeDbRight() {
+        return loudnessDynamicRangeDbRight;
+    }
+
+    public void setLoudnessDynamicRangeDbRight(BigDecimal loudnessDynamicRangeDbRight) {
+        this.loudnessDynamicRangeDbRight = loudnessDynamicRangeDbRight;
+    }
+
+    public BigDecimal getLoudnessVolumeBalanceLeftMinusRightDb() {
+        return loudnessVolumeBalanceLeftMinusRightDb;
+    }
+
+    public void setLoudnessVolumeBalanceLeftMinusRightDb(BigDecimal loudnessVolumeBalanceLeftMinusRightDb) {
+        this.loudnessVolumeBalanceLeftMinusRightDb = loudnessVolumeBalanceLeftMinusRightDb;
+    }
+
+    public BigDecimal getActivitySnrDbLeft() {
+        return activitySnrDbLeft;
+    }
+
+    public void setActivitySnrDbLeft(BigDecimal activitySnrDbLeft) {
+        this.activitySnrDbLeft = activitySnrDbLeft;
+    }
+
+    public BigDecimal getActivitySnrDbRight() {
+        return activitySnrDbRight;
+    }
+
+    public void setActivitySnrDbRight(BigDecimal activitySnrDbRight) {
+        this.activitySnrDbRight = activitySnrDbRight;
+    }
+
+    public BigDecimal getActivitySnrDbAverage() {
+        return activitySnrDbAverage;
+    }
+
+    public void setActivitySnrDbAverage(BigDecimal activitySnrDbAverage) {
+        this.activitySnrDbAverage = activitySnrDbAverage;
+    }
+
+    public BigDecimal getActivitySpeechDurationMinLeft() {
+        return activitySpeechDurationMinLeft;
+    }
+
+    public void setActivitySpeechDurationMinLeft(BigDecimal activitySpeechDurationMinLeft) {
+        this.activitySpeechDurationMinLeft = activitySpeechDurationMinLeft;
+    }
+
+    public BigDecimal getActivitySpeechDurationMinRight() {
+        return activitySpeechDurationMinRight;
+    }
+
+    public void setActivitySpeechDurationMinRight(BigDecimal activitySpeechDurationMinRight) {
+        this.activitySpeechDurationMinRight = activitySpeechDurationMinRight;
+    }
+
+    public BigDecimal getActivitySilenceDurationMinLeft() {
+        return activitySilenceDurationMinLeft;
+    }
+
+    public void setActivitySilenceDurationMinLeft(BigDecimal activitySilenceDurationMinLeft) {
+        this.activitySilenceDurationMinLeft = activitySilenceDurationMinLeft;
+    }
+
+    public BigDecimal getActivitySilenceDurationMinRight() {
+        return activitySilenceDurationMinRight;
+    }
+
+    public void setActivitySilenceDurationMinRight(BigDecimal activitySilenceDurationMinRight) {
+        this.activitySilenceDurationMinRight = activitySilenceDurationMinRight;
+    }
+
+    public BigDecimal getActivitySpeechRatioLeft() {
+        return activitySpeechRatioLeft;
+    }
+
+    public void setActivitySpeechRatioLeft(BigDecimal activitySpeechRatioLeft) {
+        this.activitySpeechRatioLeft = activitySpeechRatioLeft;
+    }
+
+    public BigDecimal getActivitySpeechRatioRight() {
+        return activitySpeechRatioRight;
+    }
+
+    public void setActivitySpeechRatioRight(BigDecimal activitySpeechRatioRight) {
+        this.activitySpeechRatioRight = activitySpeechRatioRight;
+    }
+
+    public BigDecimal getActivitySpeechOverlapDurationSec() {
+        return activitySpeechOverlapDurationSec;
+    }
+
+    public void setActivitySpeechOverlapDurationSec(BigDecimal activitySpeechOverlapDurationSec) {
+        this.activitySpeechOverlapDurationSec = activitySpeechOverlapDurationSec;
+    }
+
+    public BigDecimal getActivityBothSilenceDurationSec() {
+        return activityBothSilenceDurationSec;
+    }
+
+    public void setActivityBothSilenceDurationSec(BigDecimal activityBothSilenceDurationSec) {
+        this.activityBothSilenceDurationSec = activityBothSilenceDurationSec;
+    }
+
+    public BigDecimal getActivityNumSilencePeriods() {
+        return activityNumSilencePeriods;
+    }
+
+    public void setActivityNumSilencePeriods(BigDecimal activityNumSilencePeriods) {
+        this.activityNumSilencePeriods = activityNumSilencePeriods;
+    }
+
+    public BigDecimal getActivityAvgSilenceDurationSec() {
+        return activityAvgSilenceDurationSec;
+    }
+
+    public void setActivityAvgSilenceDurationSec(BigDecimal activityAvgSilenceDurationSec) {
+        this.activityAvgSilenceDurationSec = activityAvgSilenceDurationSec;
+    }
+
+    public BigDecimal getActivityMaxSilenceDurationSec() {
+        return activityMaxSilenceDurationSec;
+    }
+
+    public void setActivityMaxSilenceDurationSec(BigDecimal activityMaxSilenceDurationSec) {
+        this.activityMaxSilenceDurationSec = activityMaxSilenceDurationSec;
+    }
+
+    public BigDecimal getConversationNumTurnsLeft() {
+        return conversationNumTurnsLeft;
+    }
+
+    public void setConversationNumTurnsLeft(BigDecimal conversationNumTurnsLeft) {
+        this.conversationNumTurnsLeft = conversationNumTurnsLeft;
+    }
+
+    public BigDecimal getConversationNumTurnsRight() {
+        return conversationNumTurnsRight;
+    }
+
+    public void setConversationNumTurnsRight(BigDecimal conversationNumTurnsRight) {
+        this.conversationNumTurnsRight = conversationNumTurnsRight;
+    }
+
+    public BigDecimal getConversationNumTurnsTotal() {
+        return conversationNumTurnsTotal;
+    }
+
+    public void setConversationNumTurnsTotal(BigDecimal conversationNumTurnsTotal) {
+        this.conversationNumTurnsTotal = conversationNumTurnsTotal;
+    }
+
+    public BigDecimal getConversationAvgGapBetweenTurns() {
+        return conversationAvgGapBetweenTurns;
+    }
+
+    public void setConversationAvgGapBetweenTurns(BigDecimal conversationAvgGapBetweenTurns) {
+        this.conversationAvgGapBetweenTurns = conversationAvgGapBetweenTurns;
+    }
+
+    public BigDecimal getConversationTurnBalanceLeft() {
+        return conversationTurnBalanceLeft;
+    }
+
+    public void setConversationTurnBalanceLeft(BigDecimal conversationTurnBalanceLeft) {
+        this.conversationTurnBalanceLeft = conversationTurnBalanceLeft;
+    }
+
+    public BigDecimal getConversationTurnBalanceRight() {
+        return conversationTurnBalanceRight;
+    }
+
+    public void setConversationTurnBalanceRight(BigDecimal conversationTurnBalanceRight) {
+        this.conversationTurnBalanceRight = conversationTurnBalanceRight;
+    }
+
+    public Transcription getTranscription() {
+        return transcription;
+    }
+
+    public void setTranscription(Transcription transcription) {
+        this.transcription = transcription;
+    }
+
+    public Enrichment getEnrichment() {
+        return enrichment;
+    }
+
+    public void setEnrichment(Enrichment enrichment) {
+        this.enrichment = enrichment;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AudioQualityMetric that = (AudioQualityMetric) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+}
+
+// ========== Enrichment.java ==========
+package com.virtucon.batch_sync_service.entity;
+
+import jakarta.persistence.*;
+
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
+
+@Entity
+@Table(name = "enrichments")
+public class Enrichment {
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "call_id", nullable = false)
+    private UUID callId;
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "audio_quality_metric_id")
+    private AudioQualityMetric audioQualityMetric;
+
+    @Column(name = "run_config_id", nullable = false)
+    private UUID runConfigId;
+
+    @OneToMany(mappedBy = "enrichment", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @org.hibernate.annotations.BatchSize(size = 15)
+    private List<Sentence> sentences = new ArrayList<>();
+
+    @Column(name = "generated_at", nullable = false)
+    private Instant generatedAt;
+
+    protected Enrichment() {
+    }
+
+    public Enrichment(UUID callId, AudioQualityMetric audioQualityMetric, 
+                     UUID runConfigId, List<Sentence> sentences, Instant generatedAt) {
+        this.callId = callId;
+        this.audioQualityMetric = audioQualityMetric;
+        this.runConfigId = runConfigId;
+        this.sentences = sentences != null ? sentences : new ArrayList<>();
+        this.generatedAt = generatedAt;
+        
+        if (audioQualityMetric != null) {
+            audioQualityMetric.setEnrichment(this);
+        }
+        
+        for (Sentence sentence : this.sentences) {
+            sentence.setEnrichment(this);
+        }
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public UUID getCallId() {
+        return callId;
+    }
+
+    public void setCallId(UUID callId) {
+        this.callId = callId;
+    }
+
+    public AudioQualityMetric getAudioQualityMetric() {
+        return audioQualityMetric;
+    }
+
+    public void setAudioQualityMetric(AudioQualityMetric audioQualityMetric) {
+        this.audioQualityMetric = audioQualityMetric;
+        if (audioQualityMetric != null) {
+            audioQualityMetric.setEnrichment(this);
+        }
+    }
+
+    public UUID getRunConfigId() {
+        return runConfigId;
+    }
+
+    public void setRunConfigId(UUID runConfigId) {
+        this.runConfigId = runConfigId;
+    }
+
+    public List<Sentence> getSentences() {
+        return sentences;
+    }
+
+    public void setSentences(List<Sentence> sentences) {
+        this.sentences = sentences != null ? sentences : new ArrayList<>();
+        for (Sentence sentence : this.sentences) {
+            sentence.setEnrichment(this);
+        }
+    }
+
+    public void addSentence(Sentence sentence) {
+        sentences.add(sentence);
+        sentence.setEnrichment(this);
+    }
+
+    public Instant getGeneratedAt() {
+        return generatedAt;
+    }
+
+    public void setGeneratedAt(Instant generatedAt) {
+        this.generatedAt = generatedAt;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Enrichment that = (Enrichment) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+}
+
+// ========== FileEntity.java ==========
+package com.virtucon.batch_sync_service.entity;
+
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+
+import java.util.Objects;
+import java.util.UUID;
+
+@Entity
+@Table(name = "files", uniqueConstraints = {
+    @UniqueConstraint(columnNames = "url")
+})
+public class FileEntity {
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID id;
+
+    @Column(name = "url", nullable = false, unique = true, length = 1000)
+    @NotBlank(message = "URL cannot be blank")
+    private String url;
+
+    @OneToOne(mappedBy = "file", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private TaskEntity task;
+
+    protected FileEntity() {
+    }
+
+    public FileEntity(String url) {
+        this.url = url;
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public TaskEntity getTask() {
+        return task;
+    }
+
+    public void setTask(TaskEntity task) {
+        this.task = task;
+        if (task != null) {
+            task.setFile(this);
+        }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        FileEntity that = (FileEntity) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+}
+
+// ========== Sentence.java ==========
+package com.virtucon.batch_sync_service.entity;
+
+import jakarta.persistence.*;
+
+import java.math.BigDecimal;
+import java.util.Objects;
+
+@Entity
+@Table(name = "sentences")
+public class Sentence {
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "idx", nullable = false)
+    private Integer idx;
+
+    @Column(name = "text", nullable = false, columnDefinition = "TEXT")
+    private String text;
+
+    @Column(name = "emotion", nullable = false, length = 50)
+    private String emotion;
+
+    @Column(name = "emotion_score", nullable = false, precision = 5, scale = 4)
+    private BigDecimal emotionScore;
+
+    @Column(name = "speaker", nullable = false, length = 50)
+    private String speaker;
+
+    @Column(name = "start_time", nullable = false, precision = 10, scale = 3)
+    private BigDecimal startTime;
+
+    @Column(name = "end_time", nullable = false, precision = 10, scale = 3)
+    private BigDecimal endTime;
+
+    @Column(name = "asr_confidence", nullable = false, columnDefinition = "TEXT")
+    private String asrConfidence;
+
+    @Column(name = "diarisation_confidence", nullable = false, columnDefinition = "TEXT")
+    private String diarisationConfidence;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "enrichment_id")
+    private Enrichment enrichment;
+
+    protected Sentence() {
+    }
+
+    public Sentence(Integer idx, String text, String emotion, BigDecimal emotionScore, String speaker, 
+                   BigDecimal startTime, BigDecimal endTime, String asrConfidence, String diarisationConfidence) {
+        this.idx = idx;
+        this.text = text;
+        this.emotion = emotion;
+        this.emotionScore = emotionScore;
+        this.speaker = speaker;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.asrConfidence = asrConfidence;
+        this.diarisationConfidence = diarisationConfidence;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Integer getIdx() {
+        return idx;
+    }
+
+    public void setIdx(Integer idx) {
+        this.idx = idx;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public String getEmotion() {
+        return emotion;
+    }
+
+    public void setEmotion(String emotion) {
+        this.emotion = emotion;
+    }
+
+    public BigDecimal getEmotionScore() {
+        return emotionScore;
+    }
+
+    public void setEmotionScore(BigDecimal emotionScore) {
+        this.emotionScore = emotionScore;
+    }
+
+    public String getSpeaker() {
+        return speaker;
+    }
+
+    public void setSpeaker(String speaker) {
+        this.speaker = speaker;
+    }
+
+    public BigDecimal getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(BigDecimal startTime) {
+        this.startTime = startTime;
+    }
+
+    public BigDecimal getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(BigDecimal endTime) {
+        this.endTime = endTime;
+    }
+
+    public String getAsrConfidence() {
+        return asrConfidence;
+    }
+
+    public void setAsrConfidence(String asrConfidence) {
+        this.asrConfidence = asrConfidence;
+    }
+
+    public String getDiarisationConfidence() {
+        return diarisationConfidence;
+    }
+
+    public void setDiarisationConfidence(String diarisationConfidence) {
+        this.diarisationConfidence = diarisationConfidence;
+    }
+
+    public Enrichment getEnrichment() {
+        return enrichment;
+    }
+
+    public void setEnrichment(Enrichment enrichment) {
+        this.enrichment = enrichment;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Sentence sentence = (Sentence) o;
+        return Objects.equals(id, sentence.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+}
+
+// ========== TaskEntity.java ==========
+package com.virtucon.batch_sync_service.entity;
+
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+
+import java.time.LocalDateTime;
+import java.util.Objects;
+import java.util.UUID;
+
+@Entity
+@Table(name = "tasks")
+public class TaskEntity {
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID id;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "file_id", unique = true, nullable = false)
+    @NotNull(message = "File cannot be null")
+    private FileEntity file;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "task_type", nullable = false)
+    @NotNull(message = "Task type cannot be null")
+    private TaskType taskType;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "task_status", nullable = false)
+    @NotNull(message = "Task status cannot be null")
+    private TaskStatus taskStatus;
+
+    @Column(name = "processing_start")
+    private LocalDateTime processingStart;
+
+    @Column(name = "processing_end")
+    private LocalDateTime processingEnd;
+
+    @Column(name = "owner")
+    private String owner;
+
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at", nullable = false)
+    private LocalDateTime updatedAt;
+
+    protected TaskEntity() {
+    }
+
+    public TaskEntity(FileEntity file, TaskType taskType, TaskStatus taskStatus, String owner) {
+        this.file = file;
+        this.taskType = taskType;
+        this.taskStatus = taskStatus;
+        this.owner = owner;
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    @PrePersist
+    public void prePersist() {
+        LocalDateTime now = LocalDateTime.now();
+        if (this.createdAt == null) {
+            this.createdAt = now;
+        }
+        this.updatedAt = now;
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public FileEntity getFile() {
+        return file;
+    }
+
+    public void setFile(FileEntity file) {
+        this.file = file;
+    }
+
+    public TaskType getTaskType() {
+        return taskType;
+    }
+
+    public void setTaskType(TaskType taskType) {
+        this.taskType = taskType;
+    }
+
+    public TaskStatus getTaskStatus() {
+        return taskStatus;
+    }
+
+    public void setTaskStatus(TaskStatus taskStatus) {
+        this.taskStatus = taskStatus;
+    }
+
+    public LocalDateTime getProcessingStart() {
+        return processingStart;
+    }
+
+    public void setProcessingStart(LocalDateTime processingStart) {
+        this.processingStart = processingStart;
+    }
+
+    public LocalDateTime getProcessingEnd() {
+        return processingEnd;
+    }
+
+    public void setProcessingEnd(LocalDateTime processingEnd) {
+        this.processingEnd = processingEnd;
+    }
+
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TaskEntity that = (TaskEntity) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+}
+
+// ========== TaskStatus.java ==========
+package com.virtucon.batch_sync_service.entity;
+
+public enum TaskStatus {
+    READY,
+    IN_PROGRESS,
+    COMPLETED,
+    FAILED,
+    BLOCKED
+}
+
+// ========== TaskType.java ==========
+package com.virtucon.batch_sync_service.entity;
+
+public enum TaskType {
+    TRANSCRIPTION,
+    ENRICHMENT,
+    RELEVANCY,
+    NOT_ASSIGNED
+}
+
+// ========== Transcription.java ==========
+package com.virtucon.batch_sync_service.entity;
+
+import jakarta.persistence.*;
+
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
+
+@Entity
+@Table(name = "transcriptions")
+public class Transcription {
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "call_id", nullable = false)
+    private UUID callId;
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "audio_quality_metric_id")
+    private AudioQualityMetric audioQualityMetric;
+
+    @Column(name = "run_config_id", nullable = false)
+    private UUID runConfigId;
+
+    @OneToMany(mappedBy = "transcription", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @org.hibernate.annotations.BatchSize(size = 20)
+    private List<Word> words = new ArrayList<>();
+
+    @Column(name = "generated_at", nullable = false)
+    private Instant generatedAt;
+
+    protected Transcription() {
+    }
+
+    public Transcription(UUID callId, AudioQualityMetric audioQualityMetric, 
+                        UUID runConfigId, List<Word> words, Instant generatedAt) {
+        this.callId = callId;
+        this.audioQualityMetric = audioQualityMetric;
+        this.runConfigId = runConfigId;
+        this.words = words != null ? words : new ArrayList<>();
+        this.generatedAt = generatedAt;
+        
+        if (audioQualityMetric != null) {
+            audioQualityMetric.setTranscription(this);
+        }
+        
+        for (Word word : this.words) {
+            word.setTranscription(this);
+        }
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public UUID getCallId() {
+        return callId;
+    }
+
+    public void setCallId(UUID callId) {
+        this.callId = callId;
+    }
+
+    public AudioQualityMetric getAudioQualityMetric() {
+        return audioQualityMetric;
+    }
+
+    public void setAudioQualityMetric(AudioQualityMetric audioQualityMetric) {
+        if (this.audioQualityMetric != null) {
+            this.audioQualityMetric.setTranscription(null);
+        }
+        this.audioQualityMetric = audioQualityMetric;
+        if (audioQualityMetric != null) {
+            audioQualityMetric.setTranscription(this);
+        }
+    }
+
+    public UUID getRunConfigId() {
+        return runConfigId;
+    }
+
+    public void setRunConfigId(UUID runConfigId) {
+        this.runConfigId = runConfigId;
+    }
+
+    public List<Word> getWords() {
+        return words;
+    }
+
+    public void setWords(List<Word> words) {
+        if (this.words != null) {
+            for (Word word : this.words) {
+                word.setTranscription(null);
+            }
+        }
+        this.words = words != null ? words : new ArrayList<>();
+        for (Word word : this.words) {
+            word.setTranscription(this);
+        }
+    }
+
+    public void addWord(Word word) {
+        words.add(word);
+        word.setTranscription(this);
+    }
+
+    public Instant getGeneratedAt() {
+        return generatedAt;
+    }
+
+    public void setGeneratedAt(Instant generatedAt) {
+        this.generatedAt = generatedAt;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Transcription that = (Transcription) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+}
+
+// ========== Word.java ==========
+package com.virtucon.batch_sync_service.entity;
+
+import jakarta.persistence.*;
+
+import java.math.BigDecimal;
+import java.util.Objects;
+
+@Entity
+@Table(name = "words")
+public class Word {
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "word", nullable = false)
+    private String word;
+
+    @Column(name = "start_time", nullable = false, precision = 10, scale = 3)
+    private BigDecimal start;
+
+    @Column(name = "end_time", nullable = false, precision = 10, scale = 3)
+    private BigDecimal end;
+
+    @Column(name = "confidence", nullable = false, precision = 5, scale = 4)
+    private BigDecimal confidence;
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "metadata_id")
+    private WordMetadata metadata;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "transcription_id", nullable = false)
+    private Transcription transcription;
+
+    protected Word() {
+    }
+
+    public Word(String word, BigDecimal start, BigDecimal end, BigDecimal confidence, WordMetadata metadata) {
+        this.word = word;
+        this.start = start;
+        this.end = end;
+        this.confidence = confidence;
+        this.metadata = metadata;
+        if (metadata != null) {
+            metadata.setWord(this);
+        }
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getWord() {
+        return word;
+    }
+
+    public void setWord(String word) {
+        this.word = word;
+    }
+
+    public BigDecimal getStart() {
+        return start;
+    }
+
+    public void setStart(BigDecimal start) {
+        this.start = start;
+    }
+
+    public BigDecimal getEnd() {
+        return end;
+    }
+
+    public void setEnd(BigDecimal end) {
+        this.end = end;
+    }
+
+    public BigDecimal getConfidence() {
+        return confidence;
+    }
+
+    public void setConfidence(BigDecimal confidence) {
+        this.confidence = confidence;
+    }
+
+    public WordMetadata getMetadata() {
+        return metadata;
+    }
+
+    public void setMetadata(WordMetadata metadata) {
+        this.metadata = metadata;
+        if (metadata != null) {
+            metadata.setWord(this);
+        }
+    }
+
+    public Transcription getTranscription() {
+        return transcription;
+    }
+
+    public void setTranscription(Transcription transcription) {
+        this.transcription = transcription;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Word word = (Word) o;
+        return Objects.equals(id, word.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+}
+
+// ========== WordMetadata.java ==========
+package com.virtucon.batch_sync_service.entity;
+
+import jakarta.persistence.*;
+
+import java.math.BigDecimal;
+import java.util.Objects;
+
+@Entity
+@Table(name = "word_metadata")
+public class WordMetadata {
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "left_energy", nullable = false, precision = 10, scale = 6)
+    private BigDecimal leftEnergy;
+
+    @Column(name = "right_energy", nullable = false, precision = 10, scale = 6)
+    private BigDecimal rightEnergy;
+
+    @Column(name = "left_zcr", nullable = false, precision = 10, scale = 6)
+    private BigDecimal leftZcr;
+
+    @Column(name = "right_zcr", nullable = false, precision = 10, scale = 6)
+    private BigDecimal rightZcr;
+
+    @OneToOne(mappedBy = "metadata", fetch = FetchType.LAZY)
+    private Word word;
+
+    protected WordMetadata() {
+    }
+
+    public WordMetadata(BigDecimal leftEnergy, BigDecimal rightEnergy, BigDecimal leftZcr, BigDecimal rightZcr) {
+        this.leftEnergy = leftEnergy;
+        this.rightEnergy = rightEnergy;
+        this.leftZcr = leftZcr;
+        this.rightZcr = rightZcr;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public BigDecimal getLeftEnergy() {
+        return leftEnergy;
+    }
+
+    public void setLeftEnergy(BigDecimal leftEnergy) {
+        this.leftEnergy = leftEnergy;
+    }
+
+    public BigDecimal getRightEnergy() {
+        return rightEnergy;
+    }
+
+    public void setRightEnergy(BigDecimal rightEnergy) {
+        this.rightEnergy = rightEnergy;
+    }
+
+    public BigDecimal getLeftZcr() {
+        return leftZcr;
+    }
+
+    public void setLeftZcr(BigDecimal leftZcr) {
+        this.leftZcr = leftZcr;
+    }
+
+    public BigDecimal getRightZcr() {
+        return rightZcr;
+    }
+
+    public void setRightZcr(BigDecimal rightZcr) {
+        this.rightZcr = rightZcr;
+    }
+
+    public Word getWord() {
+        return word;
+    }
+
+    public void setWord(Word word) {
+        this.word = word;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        WordMetadata that = (WordMetadata) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+}

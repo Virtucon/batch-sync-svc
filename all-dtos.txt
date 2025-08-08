@@ -1,0 +1,487 @@
+// ========== AudioQualityMetricDTO.java ==========
+package com.virtucon.batch_sync_service.dto;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+
+import java.math.BigDecimal;
+
+public record AudioQualityMetricDTO(
+        @JsonProperty("audio_duration_min")
+        @NotNull
+        @Positive
+        BigDecimal audioDurationMin,
+
+        @JsonProperty("audio_sample_rate")
+        @NotNull
+        @Positive
+        Integer audioSampleRate,
+
+        @JsonProperty("spectral_centroids_left")
+        @NotNull
+        BigDecimal spectralCentroidsLeft,
+
+        @JsonProperty("spectral_centroids_right")
+        @NotNull
+        BigDecimal spectralCentroidsRight,
+
+        @JsonProperty("spectral_rolloff_left")
+        @NotNull
+        BigDecimal spectralRolloffLeft,
+
+        @JsonProperty("spectral_rolloff_right")
+        @NotNull
+        BigDecimal spectralRolloffRight,
+
+        @JsonProperty("spectral_bandwidth_left")
+        @NotNull
+        BigDecimal spectralBandwidthLeft,
+
+        @JsonProperty("spectral_bandwidth_right")
+        @NotNull
+        BigDecimal spectralBandwidthRight,
+
+        @JsonProperty("loudness_rms_db_left")
+        @NotNull
+        BigDecimal loudnessRmsDbLeft,
+
+        @JsonProperty("loudness_rms_db_right")
+        @NotNull
+        BigDecimal loudnessRmsDbRight,
+
+        @JsonProperty("loudness_peak_db_left")
+        @NotNull
+        BigDecimal loudnessPeakDbLeft,
+
+        @JsonProperty("loudness_peak_db_right")
+        @NotNull
+        BigDecimal loudnessPeakDbRight,
+
+        @JsonProperty("loudness_dynamic_range_db_left")
+        @NotNull
+        BigDecimal loudnessDynamicRangeDbLeft,
+
+        @JsonProperty("loudness_dynamic_range_db_right")
+        @NotNull
+        BigDecimal loudnessDynamicRangeDbRight,
+
+        @JsonProperty("loudness_volume_balance_left_minus_right_db")
+        @NotNull
+        BigDecimal loudnessVolumeBalanceLeftMinusRightDb,
+
+        @JsonProperty("activity_snr_db_left")
+        @NotNull
+        BigDecimal activitySnrDbLeft,
+
+        @JsonProperty("activity_snr_db_right")
+        @NotNull
+        BigDecimal activitySnrDbRight,
+
+        @JsonProperty("activity_snr_db_average")
+        @NotNull
+        BigDecimal activitySnrDbAverage,
+
+        @JsonProperty("activity_speech_duration_min_left")
+        @NotNull
+        BigDecimal activitySpeechDurationMinLeft,
+
+        @JsonProperty("activity_speech_duration_min_right")
+        @NotNull
+        BigDecimal activitySpeechDurationMinRight,
+
+        @JsonProperty("activity_silence_duration_min_left")
+        @NotNull
+        BigDecimal activitySilenceDurationMinLeft,
+
+        @JsonProperty("activity_silence_duration_min_right")
+        @NotNull
+        BigDecimal activitySilenceDurationMinRight,
+
+        @JsonProperty("activity_speech_ratio_left")
+        @NotNull
+        BigDecimal activitySpeechRatioLeft,
+
+        @JsonProperty("activity_speech_ratio_right")
+        @NotNull
+        BigDecimal activitySpeechRatioRight,
+
+        @JsonProperty("activity_speech_overlap_duration_sec")
+        @NotNull
+        BigDecimal activitySpeechOverlapDurationSec,
+
+        @JsonProperty("activity_both_silence_duration_sec")
+        @NotNull
+        BigDecimal activityBothSilenceDurationSec,
+
+        @JsonProperty("activity_num_silence_periods")
+        @NotNull
+        BigDecimal activityNumSilencePeriods,
+
+        @JsonProperty("activity_avg_silence_duration_sec")
+        @NotNull
+        BigDecimal activityAvgSilenceDurationSec,
+
+        @JsonProperty("activity_max_silence_duration_sec")
+        @NotNull
+        BigDecimal activityMaxSilenceDurationSec,
+
+        @JsonProperty("conversation_num_turns_left")
+        @NotNull
+        BigDecimal conversationNumTurnsLeft,
+
+        @JsonProperty("conversation_num_turns_right")
+        @NotNull
+        BigDecimal conversationNumTurnsRight,
+
+        @JsonProperty("conversation_num_turns_total")
+        @NotNull
+        BigDecimal conversationNumTurnsTotal,
+
+        @JsonProperty("conversation_avg_gap_between_turns")
+        @NotNull
+        BigDecimal conversationAvgGapBetweenTurns,
+
+        @JsonProperty("conversation_turn_balance_left")
+        @NotNull
+        BigDecimal conversationTurnBalanceLeft,
+
+        @JsonProperty("conversation_turn_balance_right")
+        @NotNull
+        BigDecimal conversationTurnBalanceRight
+) {
+}
+
+// ========== CreateResponseDTO.java ==========
+package com.virtucon.batch_sync_service.dto;
+
+import java.util.UUID;
+
+public record CreateResponseDTO(
+        Long id,
+        UUID callId
+) {
+}
+
+// ========== CreateTaskDto.java ==========
+package com.virtucon.batch_sync_service.dto;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.virtucon.batch_sync_service.entity.TaskStatus;
+import com.virtucon.batch_sync_service.entity.TaskType;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
+import java.time.LocalDateTime;
+
+public record CreateTaskDto(
+        @JsonProperty("file_url")
+        @NotBlank(message = "File URL cannot be blank")
+        String fileUrl,
+
+        @JsonProperty("task_type")
+        @NotNull(message = "Task type cannot be null")
+        TaskType taskType,
+
+        @JsonProperty("task_status")
+        @NotNull(message = "Task status cannot be null")
+        TaskStatus taskStatus,
+
+        @JsonProperty("processing_start")
+        LocalDateTime processingStart,
+
+        @JsonProperty("processing_end")
+        LocalDateTime processingEnd,
+
+        String owner
+) {
+}
+
+// ========== EnrichmentDTO.java ==========
+package com.virtucon.batch_sync_service.dto;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+
+import java.time.Instant;
+import java.util.List;
+import java.util.UUID;
+
+public record EnrichmentDTO(
+        @JsonProperty("call_id")
+        @NotNull(message = "Call ID cannot be null")
+        UUID callId,
+
+        @JsonProperty("audio_quality_metric")
+        @Valid
+        @NotNull(message = "Audio quality metric cannot be null")
+        AudioQualityMetricDTO audioQualityMetric,
+
+        @JsonProperty("run_config_id")
+        @NotNull(message = "Run config ID cannot be null")
+        UUID runConfigId,
+
+        @Valid
+        @NotEmpty(message = "Sentences list cannot be empty")
+        List<SentenceDTO> sentences,
+
+        @JsonProperty("generated_at")
+        @NotNull(message = "Generated at timestamp cannot be null")
+        Instant generatedAt
+) {
+}
+
+// ========== EnrichmentResponseDTO.java ==========
+package com.virtucon.batch_sync_service.dto;
+
+import java.time.Instant;
+import java.util.UUID;
+
+public record EnrichmentResponseDTO(
+        Long id,
+        UUID callId,
+        UUID runConfigId,
+        Instant generatedAt,
+        int sentenceCount
+) {
+}
+
+// ========== MetadataDTO.java ==========
+package com.virtucon.batch_sync_service.dto;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotNull;
+
+import java.math.BigDecimal;
+
+public record MetadataDTO(
+        @JsonProperty("left_energy")
+        @NotNull
+        @DecimalMin(value = "0.0", message = "Left energy must be non-negative")
+        @DecimalMax(value = "1.0", message = "Left energy must be at most 1.0")
+        BigDecimal leftEnergy,
+
+        @JsonProperty("right_energy")
+        @NotNull
+        @DecimalMin(value = "0.0", message = "Right energy must be non-negative")
+        @DecimalMax(value = "1.0", message = "Right energy must be at most 1.0")
+        BigDecimal rightEnergy,
+
+        @JsonProperty("left_zcr")
+        @NotNull
+        @DecimalMin(value = "0.0", message = "Left ZCR must be non-negative")
+        BigDecimal leftZcr,
+
+        @JsonProperty("right_zcr")
+        @NotNull
+        @DecimalMin(value = "0.0", message = "Right ZCR must be non-negative")
+        BigDecimal rightZcr
+) {
+}
+
+// ========== SentenceDTO.java ==========
+package com.virtucon.batch_sync_service.dto;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import com.virtucon.batch_sync_service.validation.ValidTimeRange;
+import com.virtucon.batch_sync_service.validation.ValidConfidenceScore;
+
+import java.math.BigDecimal;
+import java.util.List;
+
+@ValidTimeRange
+public record SentenceDTO(
+        @NotNull(message = "Index cannot be null")
+        Integer idx,
+
+        @NotEmpty(message = "Text cannot be empty")
+        String text,
+
+        @NotEmpty(message = "Emotion cannot be empty")
+        String emotion,
+
+        @JsonProperty("emotion_score")
+        @NotNull(message = "Emotion score cannot be null")
+        @ValidConfidenceScore
+        BigDecimal emotionScore,
+
+        @NotEmpty(message = "Speaker cannot be empty")
+        String speaker,
+
+        @NotNull(message = "Start time cannot be null")
+        @DecimalMin(value = "0.0", message = "Start time must be non-negative")
+        BigDecimal start,
+
+        @NotNull(message = "End time cannot be null")
+        @DecimalMin(value = "0.0", message = "End time must be non-negative")
+        BigDecimal end,
+
+        @JsonProperty("asr_confidence")
+        @NotEmpty(message = "ASR confidence list cannot be empty")
+        List<BigDecimal> asrConfidence,
+
+        @JsonProperty("diarisation_confidence")
+        @NotEmpty(message = "Diarisation confidence list cannot be empty")
+        List<String> diarisationConfidence
+) {
+}
+
+// ========== TaskDto.java ==========
+package com.virtucon.batch_sync_service.dto;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.virtucon.batch_sync_service.entity.TaskStatus;
+import com.virtucon.batch_sync_service.entity.TaskType;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+public record TaskDto(
+        UUID id,
+
+        @JsonProperty("file_id")
+        UUID fileId,
+
+        @JsonProperty("file_url")
+        String fileUrl,
+
+        @JsonProperty("task_type")
+        TaskType taskType,
+
+        @JsonProperty("task_status")
+        TaskStatus taskStatus,
+
+        @JsonProperty("processing_start")
+        LocalDateTime processingStart,
+
+        @JsonProperty("processing_end")
+        LocalDateTime processingEnd,
+
+        String owner,
+
+        @JsonProperty("created_at")
+        LocalDateTime createdAt,
+
+        @JsonProperty("updated_at")
+        LocalDateTime updatedAt
+) {
+}
+
+// ========== TranscriptionDTO.java ==========
+package com.virtucon.batch_sync_service.dto;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+
+import java.time.Instant;
+import java.util.List;
+import java.util.UUID;
+
+public record TranscriptionDTO(
+        @JsonProperty("call_id")
+        @NotNull(message = "Call ID cannot be null")
+        UUID callId,
+
+        @JsonProperty("audio_quality_metric")
+        @Valid
+        @NotNull(message = "Audio quality metric cannot be null")
+        AudioQualityMetricDTO audioQualityMetric,
+
+        @JsonProperty("run_config_id")
+        @NotNull(message = "Run config ID cannot be null")
+        UUID runConfigId,
+
+        @Valid
+        @NotEmpty(message = "Words list cannot be empty")
+        List<WordDTO> words,
+
+        @JsonProperty("generated_at")
+        @NotNull(message = "Generated at timestamp cannot be null")
+        Instant generatedAt
+) {
+}
+
+// ========== TranscriptionResponseDTO.java ==========
+package com.virtucon.batch_sync_service.dto;
+
+import java.time.Instant;
+import java.util.UUID;
+
+public record TranscriptionResponseDTO(
+        Long id,
+        UUID callId,
+        UUID runConfigId,
+        Instant generatedAt,
+        int wordCount
+) {
+}
+
+// ========== UpdateTaskDto.java ==========
+package com.virtucon.batch_sync_service.dto;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.virtucon.batch_sync_service.entity.TaskStatus;
+import com.virtucon.batch_sync_service.entity.TaskType;
+
+import java.time.LocalDateTime;
+
+public record UpdateTaskDto(
+        @JsonProperty("task_type")
+        TaskType taskType,
+
+        @JsonProperty("task_status")
+        TaskStatus taskStatus,
+
+        @JsonProperty("processing_start")
+        LocalDateTime processingStart,
+
+        @JsonProperty("processing_end")
+        LocalDateTime processingEnd,
+
+        String owner
+) {
+}
+
+// ========== WordDTO.java ==========
+package com.virtucon.batch_sync_service.dto;
+
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import com.virtucon.batch_sync_service.validation.ValidTimeRange;
+import com.virtucon.batch_sync_service.validation.ValidConfidenceScore;
+
+import java.math.BigDecimal;
+
+@ValidTimeRange
+public record WordDTO(
+        @NotBlank(message = "Word cannot be blank")
+        String word,
+
+        @NotNull
+        @DecimalMin(value = "0.0", message = "Start time must be non-negative")
+        BigDecimal start,
+
+        @NotNull
+        @DecimalMin(value = "0.0", message = "End time must be non-negative")
+        BigDecimal end,
+
+        @NotNull
+        @ValidConfidenceScore
+        BigDecimal confidence,
+
+        @Valid
+        @NotNull
+        MetadataDTO metadata
+) {
+}
