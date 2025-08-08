@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.virtucon.batch_sync_service.dto.CreateTaskDto;
+import com.virtucon.batch_sync_service.dto.PatchTaskDto;
 import com.virtucon.batch_sync_service.dto.TaskDto;
 import com.virtucon.batch_sync_service.dto.UpdateTaskDto;
 import com.virtucon.batch_sync_service.entity.TaskEntity;
@@ -23,6 +24,8 @@ public interface TaskService {
     TaskDto getTaskDto(UUID id);
     
     TaskEntity updateTask(UUID id, UpdateTaskDto updateTaskDto);
+    
+    TaskEntity patchTask(UUID id, PatchTaskDto patchTaskDto);
     
     void deleteTask(UUID id);
     

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.virtucon.batch_sync_service.dto.CreateTaskDto;
+import com.virtucon.batch_sync_service.dto.PatchTaskDto;
 import com.virtucon.batch_sync_service.dto.TaskDto;
 import com.virtucon.batch_sync_service.dto.UpdateTaskDto;
 import com.virtucon.batch_sync_service.entity.FileEntity;
@@ -95,6 +96,21 @@ public class TaskServiceImpl implements TaskService {
         }
         if (updateTaskDto.owner() != null) {
             task.setOwner(updateTaskDto.owner());
+        }
+
+        return taskRepository.save(task);
+    }
+
+    @Override
+    public TaskEntity patchTask(UUID id, PatchTaskDto patchTaskDto) {
+        TaskEntity task = taskRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Task", id));
+
+        if (patchTaskDto.taskType() != null) {
+            task.setTaskType(patchTaskDto.taskType());
+        }
+        if (patchTaskDto.taskStatus() != null) {
+            task.setTaskStatus(patchTaskDto.taskStatus());
         }
 
         return taskRepository.save(task);

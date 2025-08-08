@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.virtucon.batch_sync_service.dto.CreateTaskDto;
+import com.virtucon.batch_sync_service.dto.PatchTaskDto;
 import com.virtucon.batch_sync_service.dto.TaskDto;
 import com.virtucon.batch_sync_service.dto.UpdateTaskDto;
 import com.virtucon.batch_sync_service.entity.TaskEntity;
@@ -65,6 +67,15 @@ public class TaskController {
         TaskDto data = taskMapper.toDto(updatedTask);
         
         ApiResponse<TaskDto> response = ApiResponse.success("Task updated successfully.", data);
+        return ResponseEntity.ok(response);
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<ApiResponse<TaskDto>> patchTask(@PathVariable UUID id, @Valid @RequestBody PatchTaskDto patchTaskDto) {
+        TaskEntity patchedTask = taskService.patchTask(id, patchTaskDto);
+        TaskDto data = taskMapper.toDto(patchedTask);
+        
+        ApiResponse<TaskDto> response = ApiResponse.success("Task patched successfully.", data);
         return ResponseEntity.ok(response);
     }
 
